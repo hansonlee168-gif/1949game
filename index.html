@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>落地生根：1949 (完整版)</title>
+    <title>落地生根：1949 - 互動歷史小說</title>
+    <meta name="description" content="一款關於1949年台灣歷史的互動視覺小說。在動盪的大時代中，做出你的生存抉擇。">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;600;900&family=Noto+Sans+TC:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;500;700;900&family=Noto+Sans+TC:wght@300;400;700&display=swap');
 
         :root {
             --bg-color: #080808;
             --text-main: #e0e0e0;
             --accent-red: #8a2be2;
             --highlight: #d4ac0d;
+            --title-color: #c0392b;
         }
 
         * { box-sizing: border-box; }
@@ -28,6 +30,96 @@
             align-items: center;
         }
 
+        /* === 標題畫面 (Title Screen) === */
+        #title-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 200;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease;
+        }
+
+        #title-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.4;
+            filter: sepia(0.6) contrast(1.2) brightness(0.4);
+            animation: panZoom 30s infinite alternate;
+            z-index: -1;
+        }
+
+        .title-content {
+            text-align: center;
+            z-index: 1;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        .main-title {
+            font-size: 6rem;
+            color: var(--text-main);
+            margin: 0;
+            letter-spacing: 1.5rem;
+            font-weight: 900;
+            text-shadow: 0 0 30px rgba(0,0,0,0.8);
+            border-bottom: 2px solid var(--title-color);
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .sub-title {
+            font-size: 1.5rem;
+            color: var(--title-color);
+            letter-spacing: 0.5rem;
+            margin-bottom: 40px;
+            font-weight: 300;
+            text-transform: uppercase;
+        }
+
+        .start-btn {
+            background: transparent;
+            color: #fff;
+            border: 1px solid #666;
+            padding: 15px 50px;
+            font-size: 1.2rem;
+            font-family: 'Noto Sans TC';
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .start-btn:hover {
+            background: var(--title-color);
+            border-color: var(--title-color);
+            color: #000;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(192, 57, 43, 0.6);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.8rem;
+            color: #555;
+            letter-spacing: 1px;
+        }
+
+        @keyframes panZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        /* === 遊戲主舞台 === */
         #game-stage {
             position: relative;
             width: 100%;
@@ -38,6 +130,8 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            opacity: 0; /* 初始隱藏，等待標題畫面淡出 */
+            transition: opacity 1s;
         }
 
         /* 背景層 */
@@ -45,7 +139,7 @@
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background-repeat: no-repeat;
-            background-position: center top; /* 手機版靠上對齊 */
+            background-position: center top;
             opacity: 0.5;
             transition: opacity 0.5s ease;
             z-index: 0;
@@ -61,7 +155,6 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            /* 加深背景，確保文字可讀 */
             background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.95) 40%, #000 100%);
             scroll-behavior: smooth;
         }
@@ -183,31 +276,31 @@
         }
         #next-btn:hover { color: #fff; border-bottom: 1px solid #333; }
 
-        /* 主選單 */
+        /* 主選單 (角色選擇) */
         #main-menu {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background: #050505;
             z-index: 100;
-            display: flex;
+            display: flex; /* 初始改為 flex，但這層是在 game-stage 內 */
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            overflow-y: auto; /* 確保手機橫屏可捲動 */
+            overflow-y: auto;
         }
 
-        h1 {
-            font-size: 4rem;
+        #main-menu h1 {
+            font-size: 3rem;
             color: var(--highlight);
             margin-bottom: 10px;
-            letter-spacing: 15px;
-            text-shadow: 0 0 40px rgba(212, 172, 13, 0.3);
+            letter-spacing: 10px;
+            text-shadow: 0 0 20px rgba(212, 172, 13, 0.3);
             font-weight: 900;
             text-align: center;
         }
         
-        .menu-subtitle { color: #666; font-size: 1.1rem; margin-bottom: 40px; font-family: 'Noto Sans TC'; letter-spacing: 3px; text-align: center; }
+        .menu-subtitle { color: #666; font-size: 1rem; margin-bottom: 40px; font-family: 'Noto Sans TC'; letter-spacing: 3px; text-align: center; }
         
         .role-container { display: flex; gap: 30px; margin-top: 20px; flex-wrap: wrap; justify-content: center; }
         
@@ -235,17 +328,20 @@
         .role-desc { font-size: 0.95rem; color: #888; line-height: 1.6; font-family: 'Noto Sans TC'; }
         .role-stats { font-size: 0.75rem; color: var(--accent-red); margin-top: 10px; text-transform: uppercase; letter-spacing: 1px;}
 
-        /* ★★★ 手機適配優化 ★★★ */
+        /* 手機適配 */
         @media (max-width: 768px) {
             #text-area { padding: 30px 20px; }
             #control-area { padding: 20px; min-height: 150px; }
-            h1 { font-size: 2.5rem; letter-spacing: 5px; }
+            
+            .main-title { font-size: 3rem; letter-spacing: 0.5rem; }
+            .sub-title { font-size: 1rem; letter-spacing: 0.2rem; }
+            
+            #main-menu h1 { font-size: 2rem; letter-spacing: 5px; }
             .role-container { flex-direction: column; gap: 15px; }
             .role-card { width: 100%; height: auto; min-height: 250px; }
             .story-text { font-size: 18px; line-height: 1.8; }
             .choice-btn { padding: 15px; font-size: 15px; }
             
-            /* 手機版背景強制改為 Contain (完整顯示) 模式 */
             #bg-layer {
                 background-size: contain !important; 
                 background-position: center top !important;
@@ -256,6 +352,18 @@
 </head>
 <body>
 
+<!-- 標題畫面 -->
+<div id="title-screen">
+    <div id="title-bg"></div>
+    <div class="title-content">
+        <h1 class="main-title">落地生根</h1>
+        <h2 class="sub-title">1949・TAIWAN</h2>
+        <button class="start-btn" onclick="Engine.enterGame()">開始旅程</button>
+    </div>
+    <div class="footer">© 2024 Interactive History Project</div>
+</div>
+
+<!-- 遊戲本體 -->
 <div id="game-stage">
     <div id="bg-layer"></div>
     <div id="text-area"></div>
@@ -264,10 +372,10 @@
         <div class="choice-container" id="choice-box"></div>
     </div>
 
-    <!-- 主選單 -->
+    <!-- 角色選擇選單 -->
     <div id="main-menu">
-        <h1>落地生根</h1>
-        <div class="menu-subtitle">1949・離散與重生的島嶼史詩</div>
+        <h1>選擇你的命運</h1>
+        <div class="menu-subtitle">三種身份，三種截然不同的歷史記憶</div>
         
         <div class="role-container">
             <div class="role-card" onclick="Engine.start('chen')">
@@ -297,13 +405,14 @@
 
 <script>
 // =========================================================
-// ★★★ 線上圖片設定區 ★★★
+// ★★★ GitHub 本地圖片設定區 ★★★
+// 請確認您上傳的圖片檔名與下方完全一致（區分大小寫）
 // =========================================================
 
 const ImageConfig = {
-    chen: "", // 貼上 chen_sprites.jpg 的網址
-    li: "",   // 貼上 li_sprites.jpg 的網址
-    lim: ""   // 貼上 lin_sprites.jpg 的網址
+    chen: "./chen_sprites.jpg", // 直接讀取同目錄下的 chen_sprites.jpg
+    li: "./li_sprites.jpg",     // 直接讀取同目錄下的 li_sprites.jpg
+    lim: "./lin_sprites.jpg"    // 直接讀取同目錄下的 lin_sprites.jpg
 };
 
 // =========================================================
@@ -355,7 +464,10 @@ function getAiBg(keyword) {
     return `${base}${encodeURIComponent(p)}?width=1280&height=720&nologo=true&seed=${Math.floor(Math.random()*9999)}`;
 }
 
-// --- 劇本資料庫 (保持原樣，僅展示結構) ---
+// 設置首頁背景 (使用 AI 生成的基隆港黑雨)
+document.getElementById('title-bg').style.backgroundImage = `url('${getAiBg('rain')}')`;
+
+// --- 劇本資料庫 (史詩版) ---
 const Scripts = {
     chen: {
         start: 'c_1',
@@ -863,12 +975,25 @@ const Scripts = {
 };
 
 const Engine = {
-    state: { char: null },
+    state: { char: null, currentNodeId: null, flags: [] },
+
+    // 進入遊戲 (從 Title Screen 到 Main Menu)
+    enterGame: function() {
+        document.getElementById('title-screen').style.opacity = 0;
+        setTimeout(() => {
+            document.getElementById('title-screen').style.display = 'none';
+            document.getElementById('game-stage').style.opacity = 1;
+        }, 1000);
+    },
 
     start: function(charKey) {
         this.state.char = charKey;
-        this.renderNode(Scripts[charKey].start);
+        this.state.flags = [];
+        this.state.currentNodeId = Scripts[charKey].start;
+        
         document.getElementById('main-menu').style.display = 'none';
+        document.getElementById('text-area').innerHTML = ''; // Clear previous text
+        this.renderNode(this.state.currentNodeId);
     },
 
     renderNode: function(nodeId) {
@@ -883,43 +1008,22 @@ const Engine = {
 
         const bgLayer = document.getElementById('bg-layer');
 
-        // 智慧判斷：如果有提供線上 URL 且該節點有對應格數 -> 使用 Sprite
-        // 否則使用 AI 圖片
+        // 邏輯：如果有提供線上 URL 且該節點有對應格數 -> 使用 Sprite
         if (onlineImg && onlineImg.trim() !== "" && gridPos) {
-            // 載入使用者提供的圖片
             const img = new Image();
             img.onload = () => {
                 bgLayer.style.backgroundImage = `url('${onlineImg}')`;
                 
-                // 智慧適配：判斷螢幕是否為直向（手機）
                 const isPortrait = window.innerHeight > window.innerWidth;
                 
                 if (isPortrait) {
-                    // 手機版：使用 Contain 邏輯 (完整顯示，會有上下黑邊)
-                    // 計算：讓單一格子的寬度等於螢幕寬度
-                    // 總圖寬 = 螢幕寬 * 列數
-                    // 總圖高 = (螢幕寬 / 格子寬高比) * 行數
-                    // 這裡簡化處理：直接設定背景大小為 (列數 * 100vw)
-                    // 但因為 height 是 auto，我們需要知道圖片比例。
-                    // 既然無法預知比例，我們回退到 'cover' 但靠上對齊，或者接受 CSS Sprite 的限制
-                    
-                    // CSS Sprite 在響應式下很難做 Contain，因為 background-size 是對整張圖的。
-                    // 最佳解：background-size: (cols * 100)% auto; (以寬度為基準)
+                    // 手機版：使用 Contain 邏輯
                     bgLayer.style.backgroundSize = `${spriteData.cols * 100}% auto`;
-                    
-                    // 重新計算位置百分比
                     const xPos = (gridPos[0] / (spriteData.cols - 1)) * 100;
-                    // Y位置較難精準，因為高度是 auto。
-                    // 如果圖片是標準 grid，百分比依然有效。
                     const yPos = (gridPos[1] / (spriteData.rows - 1)) * 100;
-                    
                     bgLayer.style.backgroundPosition = `${xPos}% ${yPos}%`;
-                    
-                    // 為了置中顯示內容，可能需要調整 margin-top 或 flex 居中
-                    // 但 background-position 百分比是相對容器的。
-                    
                 } else {
-                    // 電腦版：維持原本的 Stretch/Cover 邏輯
+                    // 電腦版：Cover 邏輯
                     bgLayer.style.backgroundSize = `${spriteData.cols * 100}% ${spriteData.rows * 100}%`;
                     const xPos = (gridPos[0] / (spriteData.cols - 1)) * 100;
                     const yPos = (gridPos[1] / (spriteData.rows - 1)) * 100;
@@ -985,7 +1089,6 @@ const Engine = {
         const url = getAiBg(key);
         const bgLayer = document.getElementById('bg-layer');
         
-        // AI 圖片在手機版改為 contain (完整顯示)
         const isPortrait = window.innerHeight > window.innerWidth;
         if (isPortrait) {
             bgLayer.style.backgroundSize = 'contain';
@@ -997,6 +1100,10 @@ const Engine = {
         }
         
         bgLayer.style.backgroundImage = `url('${url}')`;
+    },
+    
+    next: function() {
+        // Fallback
     }
 };
 </script>

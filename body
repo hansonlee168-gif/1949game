@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>落地生根：1949 (完整版)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;600;900&family=Noto+Sans+TC:wght@300;400;700&display=swap');
+
+        :root {
+            --bg-color: #080808;
+            --text-main: #e0e0e0;
+            --accent-red: #8a2be2;
+            --highlight: #d4ac0d;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-color);
+            font-family: 'Noto Serif TC', serif;
+            overflow: hidden;
+            height: 100vh;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #game-stage {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 1200px;
+            background: #000;
+            box-shadow: 0 0 100px rgba(0,0,0,1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* 背景層 */
+        #bg-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-repeat: no-repeat;
+            background-position: center top; /* 手機版靠上對齊 */
+            opacity: 0.5;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+            filter: sepia(0.2) contrast(1.1);
+        }
+
+        /* 閱讀區 */
+        #text-area {
+            position: relative;
+            z-index: 10;
+            flex-grow: 1;
+            padding: 50px 150px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            /* 加深背景，確保文字可讀 */
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.95) 40%, #000 100%);
+            scroll-behavior: smooth;
+        }
+
+        #text-area::-webkit-scrollbar { width: 6px; }
+        #text-area::-webkit-scrollbar-track { background: transparent; }
+        #text-area::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
+        .story-block {
+            margin-bottom: 60px;
+            opacity: 0;
+            animation: fadeInMove 1s forwards;
+            padding-left: 20px;
+            border-left: 3px solid rgba(255, 255, 255, 0.2);
+            transition: border-color 0.5s;
+        }
+        
+        .story-block:hover { border-left-color: var(--highlight); }
+
+        .story-text {
+            font-size: 20px;
+            line-height: 2;
+            white-space: pre-wrap;
+            text-align: justify;
+            text-shadow: 2px 2px 4px black;
+            color: #ddd;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .history-note {
+            font-family: 'Noto Sans TC', sans-serif;
+            font-size: 15px;
+            color: #aaa;
+            background: rgba(138, 43, 226, 0.15);
+            border-left: 4px solid var(--accent-red);
+            padding: 15px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+            line-height: 1.6;
+        }
+        
+        .history-title {
+            font-weight: bold;
+            color: #d1c4e9;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .speaker-tag {
+            font-weight: 700;
+            color: var(--highlight);
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            display: block;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #333;
+            width: fit-content;
+            padding-bottom: 5px;
+        }
+
+        @keyframes fadeInMove { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        /* 控制區 */
+        #control-area {
+            min-height: 180px;
+            padding: 20px 150px;
+            background: #080808;
+            z-index: 20;
+            border-top: 1px solid #222;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .choice-container { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+
+        .choice-btn {
+            background: linear-gradient(90deg, #151515, #1e1e1e);
+            color: #aaa;
+            border: 1px solid #333;
+            padding: 18px 25px;
+            font-family: 'Noto Sans TC', sans-serif;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice-btn:hover {
+            border-color: var(--highlight);
+            color: #fff;
+            background: #252525;
+            padding-left: 35px;
+        }
+
+        .choice-detail { display: block; font-size: 13px; color: #777; margin-top: 5px; }
+
+        #next-btn {
+            color: #666;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+            letter-spacing: 5px;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+        #next-btn:hover { color: #fff; border-bottom: 1px solid #333; }
+
+        /* 主選單 */
+        #main-menu {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #050505;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto; /* 確保手機橫屏可捲動 */
+        }
+
+        h1 {
+            font-size: 4rem;
+            color: var(--highlight);
+            margin-bottom: 10px;
+            letter-spacing: 15px;
+            text-shadow: 0 0 40px rgba(212, 172, 13, 0.3);
+            font-weight: 900;
+            text-align: center;
+        }
+        
+        .menu-subtitle { color: #666; font-size: 1.1rem; margin-bottom: 40px; font-family: 'Noto Sans TC'; letter-spacing: 3px; text-align: center; }
+        
+        .role-container { display: flex; gap: 30px; margin-top: 20px; flex-wrap: wrap; justify-content: center; }
+        
+        .role-card {
+            width: 280px;
+            height: 420px;
+            border: 1px solid #222;
+            background: linear-gradient(170deg, #111 0%, #000 100%);
+            padding: 30px;
+            cursor: pointer;
+            transition: 0.4s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .role-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            border-color: var(--highlight);
+        }
+
+        .role-name { font-size: 2rem; color: #eee; font-family: 'Noto Serif TC'; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;}
+        .role-desc { font-size: 0.95rem; color: #888; line-height: 1.6; font-family: 'Noto Sans TC'; }
+        .role-stats { font-size: 0.75rem; color: var(--accent-red); margin-top: 10px; text-transform: uppercase; letter-spacing: 1px;}
+
+        /* ★★★ 手機適配優化 ★★★ */
+        @media (max-width: 768px) {
+            #text-area { padding: 30px 20px; }
+            #control-area { padding: 20px; min-height: 150px; }
+            h1 { font-size: 2.5rem; letter-spacing: 5px; }
+            .role-container { flex-direction: column; gap: 15px; }
+            .role-card { width: 100%; height: auto; min-height: 250px; }
+            .story-text { font-size: 18px; line-height: 1.8; }
+            .choice-btn { padding: 15px; font-size: 15px; }
+            
+            /* 手機版背景強制改為 Contain (完整顯示) 模式 */
+            #bg-layer {
+                background-size: contain !important; 
+                background-position: center top !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="game-stage">
+    <div id="bg-layer"></div>
+    <div id="text-area"></div>
+    <div id="control-area">
+        <div id="next-btn" onclick="Engine.next()">▼ 繼續劇情</div>
+        <div class="choice-container" id="choice-box"></div>
+    </div>
+
+    <!-- 主選單 -->
+    <div id="main-menu">
+        <h1>落地生根</h1>
+        <div class="menu-subtitle">1949・離散與重生的島嶼史詩</div>
+        
+        <div class="role-container">
+            <div class="role-card" onclick="Engine.start('chen')">
+                <div>
+                    <div class="role-name">陳光文</div>
+                    <div class="role-desc">流亡學生。<br>在白色恐怖的陰影下，尋找失蹤的導師與理想。</div>
+                </div>
+                <div class="role-stats">歷史焦點：學運、白色恐怖</div>
+            </div>
+            <div class="role-card" onclick="Engine.start('li')">
+                <div>
+                    <div class="role-name">李國強</div>
+                    <div class="role-desc">流亡軍眷。<br>在族群衝突與省籍情結的夾縫中，尋找生存的尊嚴。</div>
+                </div>
+                <div class="role-stats">歷史焦點：眷村、族群融合</div>
+            </div>
+            <div class="role-card" onclick="Engine.start('lim')">
+                <div>
+                    <div class="role-name">林阿土</div>
+                    <div class="role-desc">返鄉軍伕。<br>在惡性通膨與政權更迭的混亂中，試圖守護一家溫飽。</div>
+                </div>
+                <div class="role-stats">歷史焦點：惡性通膨、228陰影</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// =========================================================
+// ★★★ 線上圖片設定區 ★★★
+// =========================================================
+
+const ImageConfig = {
+    chen: "", // 貼上 chen_sprites.jpg 的網址
+    li: "",   // 貼上 li_sprites.jpg 的網址
+    lim: ""   // 貼上 lin_sprites.jpg 的網址
+};
+
+// =========================================================
+
+const SpriteMap = {
+    chen: {
+        cols: 5, rows: 3,
+        map: {
+            'c_1': [0, 0], 'c_dead_1': [1, 0], 'c_poor_start': [2, 0], 'c_poor_train': [3, 0], 'c_poor_meeting': [4, 0],
+            'c_poor_sell': [0, 1], 'c_poor_teacher': [1, 1], 'c_poor_decision': [2, 1], 'c_end_hero': [3, 1], 'c_end_guilt': [4, 1],
+            'c_rich_apt': [0, 2], 'c_rich_news': [1, 2], 'c_rich_bribe': [2, 2], 'c_rich_us': [3, 2]
+        }
+    },
+    li: {
+        cols: 4, rows: 3,
+        map: {
+            'l_1': [0, 0], 'l_dead': [1, 0], 'l_dignity_start': [2, 0], 'l_dignity_event': [3, 0],
+            'l_dignity_fight': [0, 1], 'l_dignity_talk': [1, 1], 'l_dog_start': [2, 1], 'l_dog_mission': [3, 1],
+            'l_end_agent': [0, 2], 'l_end_betray': [1, 2]
+        }
+    },
+    lim: {
+        cols: 3, rows: 3,
+        map: {
+            'm_1': [0, 0], 'm_rebel_start': [1, 0], 'm_rebel_hardship': [2, 0],
+            'm_end_martyr': [0, 1], 'm_end_snitch': [1, 1], 'm_collab_start': [2, 1],
+            'm_collab_choice': [0, 2], 'm_end_tycoon': [1, 2], 'm_end_merchant': [2, 2]
+        }
+    }
+};
+
+function getAiBg(keyword) {
+    const base = "https://image.pollinations.ai/prompt/";
+    const prompts = {
+        'rain': '1949 Keelung harbor dock heavy rain night dark noir photography cinematic',
+        'train': 'inside vintage steam train 1949 crowded refugees dim light sepia',
+        'slum': '1949 Taipei slum alleyway night poverty vintage noir',
+        'school': 'old japanese house taipei 1949 sealed door white paper tape',
+        'rich': '1949 vintage luxury apartment interior taipei window rain view',
+        'admin': '1949 Taipei government building red brick exterior sunny harsh shadows',
+        'dock': '1949 harbor workers carrying crates sweat sun exhausted vintage',
+        'interrogation': 'dark interrogation room spotlight chair fear cinematic noir',
+        'jungle': 'Taiwan mountain jungle guerilla camp rain fog green vintage',
+        'office': '1949 office desk piles of paper busy vintage',
+        'riot': '1949 street riot fire chaos night angry crowd cinematic',
+        'sunset': 'Lonely figure watching sunset ocean horizon melancholic 1949'
+    };
+    const p = prompts[keyword] || prompts['rain'];
+    return `${base}${encodeURIComponent(p)}?width=1280&height=720&nologo=true&seed=${Math.floor(Math.random()*9999)}`;
+}
+
+// --- 劇本資料庫 (保持原樣，僅展示結構) ---
+const Scripts = {
+    chen: {
+        start: 'c_1',
+        nodes: {
+            'c_1': {
+                ai_key: 'rain',
+                text: `[第一章：黑雨與禁書]
+1949年1月27日，基隆港。
+天空像破了個洞，黑色的雨水夾雜著煤煙傾瀉而下。
+太平輪巨大的鳴笛聲在身後響起，像是一頭瀕死巨獸的哀鳴。
+
+你緊緊抱著懷裡的皮箱，指節因為用力而發白。
+那是你唯一的財產，也是你的催命符——在幾件破舊的長衫下，藏著一本魯迅的《狂人日記》和幾本紅色封面的油印小冊子。
+
+前方是憲兵檢查哨。探照燈刺眼地掃來掃去。
+滿臉橫肉的憲兵，手中的警棍無聊地敲擊著沙袋。
+「下一個！箱子打開！有沒有違禁品？」
+你看到前一個人的行李被粗暴地倒在泥水裡，書頁散落一地，瞬間被踩進爛泥。
+你的心跳到了嗓子眼。如果書被發現，你就是「赤色分子」。
+
+<div class="history-note">
+<span class="history-title">歷史背景：動員戡亂時期</span>
+1949年，國民政府發布戒嚴令前夕。針對左翼書籍與思想的審查極為嚴格，持有魯迅、馬克思等書籍可被視為「匪諜」，輕則入獄，重則槍決。
+</div>`,
+                choices: [
+                    { text: "A. 【賄賂】 塞出父親縫在內襯裡的最後美金", target: 'c_poor_train', desc: "保住書，但會身無分文。" },
+                    { text: "B. 【丟棄】 趁亂將皮箱推入海中", target: 'c_rich_apt', desc: "保住錢，但失去精神支柱。" },
+                    { text: "C. 【硬抗】 拒絕檢查，聲明人權", target: 'c_dead_1', desc: "以卵擊石，直接對抗體制。" }
+                ]
+            },
+            'c_dead_1': {
+                ai_key: 'rain',
+                text: `「人權？這裡只認拳頭！」
+憲兵冷笑一聲，一記厚重的槍托重重砸在你的太陽穴上。
+世界瞬間黑了下去。雨聲漸漸遠去。
+你在抵達台灣的第一個小時，就成為了一具無名屍體。
+[結局：死於非命]`,
+                type: 'end'
+            },
+            'c_poor_train': {
+                ai_key: 'train',
+                text: `你咬著牙，伸手摸進內襯，觸碰到了那捲帶著體溫的美金。
+你顫抖著手，將錢塞進憲兵油膩的手心。
+憲兵瞥了一眼，拇指快速搓了搓，嘴角勾起一抹貪婪的笑，揮手放行。
+
+你抱著皮箱衝進雨中。你保住了書，但也失去了在這個陌生島嶼生存的資本。
+你混上了一列開往台北的蒸汽火車。
+車廂裡擠滿了各種各樣的人：抱著孩子的婦女、受傷的士兵、一臉茫然的學生。
+空氣混濁，充滿了汗臭味和焦慮的氣息。
+每當火車停下，車廂裡就會陷入死一般的寂靜，每個人都在害怕憲兵上車檢查。
+你緊緊抱著皮箱，感覺那本《狂人日記》像一塊燒紅的炭，燙得你胸口發疼。`,
+                next: 'c_poor_meeting'
+            },
+            'c_poor_meeting': {
+                ai_key: 'slum',
+                text: `[第二章：流浪台北]
+抵達台北車站時，已經是深夜。
+車站大廳裡睡滿了流浪者，像是一具具排列整齊的屍體。
+你付不起旅館錢，只能在車站外的騎樓下找個避風的角落鋪張報紙。
+
+第三天，你在車站遇到了一個同樣落魄的學生，小林。
+他戴著一副破了一邊鏡片的眼鏡，神情緊張。
+「聽說了嗎？台大那邊抓得很兇。」小林壓低聲音，「昨天半夜吉普車衝進宿舍，抓走了好幾個學長。聽說是因為參加了讀書會。」
+「你的那位張教授...我聽說他也上了名單。」
+你心裡一沉。你千里迢迢來投奔恩師張教授，他是你唯一的希望。
+如果連他也出事了，你在這座孤島上將徹底無依無靠。
+肚子發出劇烈的抗議聲，飢餓感像蟲子一樣啃食著你的胃。`,
+                choices: [
+                    { text: "1. 【堅持尋找】 這是唯一的希望，就算餓死也要去", target: 'c_poor_teacher', desc: "即便前方是陷阱，也要親眼確認。" },
+                    { text: "2. 【放棄理想】 為了活下去，把禁書賣給舊書攤", target: 'c_poor_sell', desc: "麵包比思想重要，先活下來再說。" }
+                ]
+            },
+            'c_poor_sell': {
+                ai_key: 'slum',
+                text: `飢餓戰勝了理想。生存的本能讓你妥協了。
+你抱著那本《狂人日記》，來到了牯嶺街的舊書攤。
+老闆是個精明的老頭，他翻了翻書，嗤笑一聲：「這種書現在是禁忌，沒人敢收。看你可憐，給你五塊錢。」
+你沒有討價還價。你看著書被扔進雜物堆，彷彿那是你自己的靈魂被丟棄了。
+
+你用那些錢買了幾個肉包子，狼吞虎嚥地吃了下去，邊吃邊流淚。
+後來，你在紡織廠找了份會計工作，娶了工廠女工，學會了聽話，學會了閉嘴。
+你庸庸碌碌地過了一生，再也不敢看書。
+[結局：庸碌的倖存者]`,
+                type: 'end'
+            },
+            'c_poor_teacher': {
+                ai_key: 'school',
+                text: `「不，我必須去。」你對小林說，也對自己說。
+你咬牙拒絕了賣書的念頭，拖著虛弱的身體，憑著記憶找到了溫州街的教職員宿舍區。
+這裡原本是日式宿舍，種滿了高大的麵包樹，安靜而優雅。
+但現在，空氣中瀰漫著一種說不出的肅殺之氣。
+
+你找到了張教授的家。
+那是一棟日式平房，院門緊閉，上面貼著兩條刺眼的白色封條——「查封」。
+透過圍牆，你看到院子裡的雜草已經長高了。
+你感到一陣天旋地轉，絕望幾乎將你擊倒。
+就在這時，一個戴鴨舌帽的年輕人騎著腳踏車匆匆路過，他假裝不小心撞了你一下。
+「別出聲，別回頭。」他塞給你一個油紙包，聲音極低，「老師被帶走了。憲兵在找這份名單。快走！」`,
+                next: 'c_poor_decision'
+            },
+            'c_poor_decision': {
+                ai_key: 'slum',
+                text: `[第三章：生死名單]
+你躲到一條無人的暗巷，手顫抖著打開包裹。
+裡面是一張去香港的船票，和一份密密麻麻的名單——那是讀書會所有學生的名字。
+還有一張紙條，上面是老師熟悉的字跡：「火種不滅。」
+
+遠處傳來了警笛聲，越來越近。
+你知道，這份名單是張教授用命換來的，也是幾十個學生的催命符。如果落入特務手中，這些年輕人都會死。
+船票是你唯一的生路。如果你燒了名單，拿著船票走，你就能活。
+如果你選擇去通知名單上的人，你可能會死，而且時間緊迫。
+
+<div class="history-note">
+<span class="history-title">歷史背景：四六事件與白色恐怖</span>
+1949年4月6日，軍警包圍台大與師大宿舍，大規模逮捕學生。此後，針對校園的肅清行動持續多年，許多師生因閱讀禁書或參與社團而被捕、失蹤。
+</div>`,
+                choices: [
+                    { text: "A. 【通知同志】 帶著名單去警告其他人", target: 'c_end_hero', desc: "成為火種，照亮黑暗。" },
+                    { text: "B. 【銷毀名單】 燒掉證據，獨自逃亡", target: 'c_end_guilt', desc: "我只是一個普通人，我想活下去。" }
+                ]
+            },
+            'c_end_hero': {
+                ai_key: 'sunset',
+                text: `你把船票撕了。
+那一刻，你不再感到飢餓，不再感到恐懼。
+那晚，你在台北迷宮般的巷弄裡狂奔，敲開了一扇又一扇門。
+「快跑！憲兵來了！名單洩漏了！」
+你看著他們驚恐的臉轉為感激，看著他們匆忙收拾細軟從後門逃離。
+
+當你通知完最後一個人時，天亮了。
+你精疲力盡地坐在路邊，看著初升的太陽。
+一輛吉普車停在你面前，憲兵跳下車，黑洞洞的槍口對準了你。
+
+你在綠島被關了整整15年。
+但當你出獄那天，碼頭上站著幾十個中年人，他們都流著淚迎接你——他們都是當年因為你而活下來的學生。
+你看著海，笑了。這一切都值得。
+[結局：綠島的燈塔]`,
+                type: 'end'
+            },
+            'c_end_guilt': {
+                ai_key: 'sunset',
+                text: `恐懼壓垮了你。你顫抖著手點燃了打火機。
+火焰吞噬了名單上的名字，也吞噬了你的良知。
+你燒掉了名單，拿著船票連夜逃到了香港，後來去了美國。
+
+你憑藉著聰明才智，在美國學術界佔有一席之地。
+你住在大房子裡，受人尊敬，遠離了台灣的風暴。
+但你終身未婚，也沒有朋友。你不敢回台灣。
+每當下雨的夜晚，你總會夢見那些被你燒掉的名字，夢見張教授在火中向你呼救。
+你活下來了，但你早就死在了那條暗巷裡。
+[結局：倖存者的愧疚]`,
+                type: 'end'
+            },
+            'c_rich_apt': {
+                ai_key: 'rich',
+                text: `你心一橫，閉上眼睛將皮箱推入了漆黑的海水。
+「撲通」一聲，水花濺起又消失。
+你的精神食糧，連同魯迅的吶喊，一起沉入了海底。
+你空手過關，憲兵沒有為難你。
+
+你摸了摸縫在內褲口袋裡的金條，那是父親留給你的最後遺產。
+你在台北市中心租了一間不錯的公寓。
+你有軟床睡，有熱水澡洗，還能去西門町喝到昂貴的咖啡。
+但每當夜深人靜，聽著窗外的雨聲，你總覺得心裡空蕩蕩的，像是缺了一塊。
+那種空虛感，比飢餓更難受。`,
+                next: 'c_rich_news'
+            },
+            'c_rich_news': {
+                ai_key: 'rich',
+                text: `[第二章：金錢的界線]
+幾個月後，你在報紙的角落看到了一則不起眼的新聞。
+「破獲台大匪諜案，首腦張某已被逮捕。」
+報紙上說他是「匪諜」。你看著報紙上那張模糊的照片，那是你敬愛的導師。
+
+你看著手中的金條。在這個混亂的時代，金條是唯一的硬通貨。
+你有錢，或許可以做點什麼。
+但是，這是政治案件，沾上就是一身腥。
+特務無孔不入，也許你現在已經被監視了。`,
+                choices: [
+                    { text: "1. 【嘗試營救】 花錢打通關節，試圖救人", target: 'c_rich_bribe', desc: "我相信金錢萬能，即使是買命。" },
+                    { text: "2. 【明哲保身】 用錢買張機票，遠走高飛", target: 'c_rich_us', desc: "台灣太危險了，我要去美國。" }
+                ]
+            },
+            'c_rich_bribe': {
+                ai_key: 'interrogation',
+                text: `你天真地以為錢能解決一切。
+你帶著兩根金條，透過關係找到了警備總部的一位參謀。
+在煙霧繚繞的辦公室裡，參謀收下了金條，卻反手按下了桌上的鈴。
+「企圖資助匪諜？看來你也是同夥吧！」
+憲兵衝了進來。
+
+你的錢被沒收，人被關進了青島東路的看守所。
+在獄中，你遠遠見到了張教授。他滿身是傷，正被拖去刑場。
+他看到了你，眼神中沒有責怪，只有驚訝和深深的憐憫。
+你終於明白，在這個時代，有些東西是錢買不到的。
+[結局：散財消災(失敗)]`,
+                type: 'end'
+            },
+            'c_rich_us': {
+                ai_key: 'rich',
+                text: `你選擇了最理智的路。
+你變賣了所有家當，換成了美金，買了一張去美國的單程機票。
+飛機起飛時，你俯瞰著這座潮濕、混亂的島嶼，心中沒有一絲留戀。
+
+你在美國過著富足的中產階級生活，娶了白人妻子，生了混血兒女。
+你住在有草坪的大房子裡，週末會去教堂。
+但你至死都沒有再講過一句中文，也沒有教孩子說中文。
+你把那個1949年的自己，連同那本《狂人日記》，徹底埋葬了。
+[結局：漂泊的異鄉人]`,
+                type: 'end'
+            }
+        }
+    },
+    li: {
+        start: 'l_1',
+        nodes: {
+            'l_1': {
+                ai_key: 'admin',
+                text: `[第一章：被踐踏的勳章]
+1949年2月，台北行政公署（原總督府）門前。
+正午的烈日毒辣得像要剝人一層皮，柏油路面散發著令人窒息的熱氣。
+你穿著父親留下的軍服，袖口磨破了，腳下的軍靴也張了口。
+你手裡緊緊捏著一枚銅質的「青天白日勳章」，那是父親在徐蚌會戰前交給你的。
+
+你攔住了一位從大樓裡走出來的軍官。
+「長官！俺爹是七十二軍連長！俺來找部隊！俺沒有飯吃了！」
+旁邊的衛兵不耐煩了，一把拍掉了你的手。
+「噹啷」一聲，勳章滾進了路邊散發著惡臭的水溝裡。
+「找部隊？現在將軍都在街上討飯，你一個連長的兒子算個屁？滾！」
+衛兵的罵聲引來了路人的圍觀，他們指指點點，眼神中帶著嘲弄和冷漠。
+你看著水溝裡的勳章，那是你最後的尊嚴。
+
+<div class="history-note">
+<span class="history-title">歷史背景：外省難民潮</span>
+1949年前後，約有120萬人從中國大陸撤退至台灣。初期政府無力安置龐大人口，許多軍眷流離失所，只能在學校、廟宇或路邊搭建違章建築棲身。
+</div>`,
+                choices: [
+                    { text: "A. 【隱忍】 撿起勳章離開", target: 'l_dignity_start', desc: "靠自己的雙手活下去，不求人。" },
+                    { text: "B. 【乞求】 下跪求一口飯吃", target: 'l_dog_start', desc: "為了活下去，尊嚴可以賣掉。" },
+                    { text: "C. 【暴怒】 拔刀拼命", target: 'l_dead', desc: "士可殺不可辱。" }
+                ]
+            },
+            'l_dead': {
+                ai_key: 'admin',
+                text: `「俺跟你們拼了！」你發出一聲受傷野獸般的怒吼，拔出腰間生鏽的匕首衝了上去。
+但在你碰到衛兵之前，一聲清脆的槍響劃破了午後的寧靜。
+你倒在血泊中，眼睛還死死盯著水溝裡那枚沾滿汙泥的勳章。
+父親... 對不起...
+[結局：街頭喋血]`,
+                type: 'end'
+            },
+            'l_dignity_start': {
+                ai_key: 'dock',
+                text: `你咬著牙，沒有讓眼淚流下來。
+你默默跳進臭水溝，撿起那枚勳章，用袖子仔仔細細地擦乾淨上面的汙泥。
+你沒有再看那些人一眼，轉身走向了基隆的方向。
+既然國家不要你，你就靠自己的雙手活下去。
+
+[第二章：碼頭孤狼]
+你在基隆碼頭當起了搬運工。
+每天扛著幾百斤的米袋，肩膀磨破了皮，結了痂，又磨破。
+你是碼頭上唯一的「外省仔」，語言不通，本地工人都排擠你，叫你「死阿山」。
+你聽不懂他們的話，但你看得懂他們的眼神——那是看入侵者的眼神。`,
+                next: 'l_dignity_event'
+            },
+            'l_dignity_event': {
+                ai_key: 'dock',
+                text: `這天午餐，工頭發了薪水——一碗稀得看不見米粒的地瓜粥。
+一個年輕的本地工人路過，或許是無心，或許是有意，他的扁擔撞翻了你的碗。
+熱粥灑了一地，滲進了黑色的泥土裡。
+「（台語）哎唷，歹勢喔！滾回去！這裡沒你的飯！」
+周圍傳來幾聲竊笑。
+你握緊了拳頭。你已經餓了一整天了，那是你的救命糧。
+怒火在胸膛燃燒，你想殺人。但你看著地上的米粒，又想起了父親臨走前那張慈祥的臉。`,
+                choices: [
+                    { text: "1. 【暴力】 打到他服為止", target: 'l_dignity_fight', desc: "贏得恐懼，但永遠孤獨。" },
+                    { text: "2. 【溝通】 嘗試化解敵意", target: 'l_dignity_talk', desc: "放下身段，贏得尊重。" }
+                ]
+            },
+            'l_dignity_fight': {
+                ai_key: 'jungle',
+                text: `你再也忍受不了了。你像頭瘋牛一樣衝上去，一拳打碎了那個工人的鼻樑。
+你把他打得半死，直到工頭帶著人把你拉開。
+從此以後，碼頭上沒人敢再惹你，但也沒人敢接近你。
+你成了大家都害怕的瘋子。
+
+後來，你去花蓮修築中橫公路。在一次爆破中，你為了救人失去了一條腿。
+你在深山的榮民之家度過了餘生，終身未婚。
+臨死時，你手裡還緊緊握著那枚勳章，那是你唯一的親人。
+[結局：孤獨的榮民]`,
+                type: 'end'
+            },
+            'l_dignity_talk': {
+                ai_key: 'teahouse',
+                text: `你深吸一口氣，鬆開了拳頭。
+你蹲下身，一點一點撿起地上還沒髒的米粒，放進嘴裡。
+「俺只是想活著，跟大家一樣。」你用這幾個月學來的、蹩腳的台語說道，「大家都是苦命人，何必互相為難？」
+周圍的笑聲停了。那個年輕工人愣住了，臉上閃過一絲愧疚。
+
+這時，旁邊一位賣涼茶的本省阿婆看不下去，走過來遞給你一碗熱湯。
+「少年欸，呷飽沒？這碗請你。」
+那碗湯很熱，暖進了你的心裡。你的眼淚終於忍不住流了下來。
+
+後來，你入贅了阿婆家，勤勞肯幹。你學會了煮道地的切仔麵。
+幾十年後，你操著一口流利的台語，抱著孫子在廟口講古。
+你不再是異鄉人，你是這裡的父親。
+[結局：落地生根]`,
+                type: 'end'
+            },
+            'l_dog_start': {
+                ai_key: 'admin',
+                text: `飢餓摧毀了你的脊樑。
+你跪了下來，向衛兵磕頭：「長官，行行好，給口飯吃吧。」
+衛兵像餵狗一樣，從口袋裡掏出一塊發霉的半塊麵包丟在地上。
+你像狗一樣趴在地上撿起來吃了。
+
+這一幕，被旁邊一輛停著的黑色轎車裡的人看在眼裡。
+車窗搖下，一個穿中山裝、眼神陰鷙的男人看著狼吞虎嚥的你。
+「能忍人所不能忍，是個人才。」他走下車，遞給你一把沉甸甸的黑星手槍。
+「我是保密局的。國家需要你這種沒有牽掛、心裡有恨的人。」
+「想不想報仇？那些瞧不起你的人，你都可以踩在腳下。加入我們，這把槍能幫你找回尊嚴。」`,
+                next: 'l_dog_mission'
+            },
+            'l_dog_mission': {
+                ai_key: 'interrogation',
+                text: `[第三章：染血的雙手]
+你加入了「特別行動組」。
+你有新衣服穿，有肉吃，還有人見了你會發抖。
+這天，長官交給你第一個獨立任務：去抓捕一個藏在民宅裡的「赤色份子」。
+
+你帶著人踢開門，衝進屋裡。
+你發現那個「赤色份子」是一個和你父親年紀相仿的老人，正抱著小孫子在讀書，嚇得瑟瑟發抖。
+長官冷冷地站在你身後：「動手。證明你的忠誠。殺了他，你就是副隊長。」
+老人看著你，眼神裡充滿了恐懼和哀求，像極了當年在戰場上死去的父親。`,
+                choices: [
+                    { text: "1. 【執行命令】 開槍抓人", target: 'l_end_agent', desc: "徹底黑化，獲得權力。" },
+                    { text: "2. 【抗命】 放走老人", target: 'l_end_betray', desc: "良心發現，自我毀滅。" }
+                ]
+            },
+            'l_end_agent': {
+                ai_key: 'interrogation',
+                text: `「砰！」
+你扣下了扳機。槍聲在狹小的房間裡迴盪。
+老人倒下了。那一刻，李國強死了，活下來的是一個沒有靈魂的特務代號。
+
+你步步高升，抓了無數人，殺了無數人。
+你住進了眷村最好的房子，娶了漂亮的太太，人人都怕你。
+但晚年你患上了嚴重的失智症和被害妄想。
+你整天躲在櫃子裡，對著空氣尖叫：「別過來！我不是壞人！我只是聽命令！別過來！」
+[結局：體制的囚徒]`,
+                type: 'end'
+            },
+            'l_end_betray': {
+                ai_key: 'rain',
+                text: `你看著老人的眼睛，手在發抖。
+你下不了手。那是和你父親一樣的臉啊。
+你猛地轉身，朝天花板開了一槍，大吼：「快跑！」
+老人抱著孩子衝出了後門。
+
+幾乎同時，一聲槍響從你背後響起。
+長官冷冷地收起槍：「廢物。」
+你倒在地上，鮮血染紅了視線。
+但你覺得心裡終於輕鬆了。你沒有變成鬼，你是作為一個人死去的。
+[結局：遲來的良知]`,
+                type: 'end'
+            }
+        }
+    },
+    lim: {
+        start: 'm_1',
+        nodes: {
+            'm_1': {
+                ai_key: 'slum',
+                text: `[第一章：廢紙般的錢]
+1949年3月，大稻埕。
+你從南洋戰場死裡逃生回來，以為能讓家人過上好日子。
+你興沖沖地挖出父親藏在地板下的一麻袋舊台幣，跑去巷口的米行。
+「老闆！買五十斤米！我有錢！」
+米行老闆看了一眼你袋子裡的錢，嘆了口氣，指了指牆上的告示。
+「阿土啊，這些現在連擦屁股都嫌硬。物價一天漲三倍。現在要袁大頭，要美金。舊台幣沒人收了。」
+
+你站在街頭，手裡抓著那把廢紙，感到一陣天旋地轉。
+家裡，弟弟因為營養不良發高燒，急需盤尼西林。
+你需要真正的錢，或者是藥。但你現在一無所有。
+
+<div class="history-note">
+<span class="history-title">歷史背景：惡性通膨</span>
+戰後初期，國民政府大量印製鈔票應付內戰開銷，導致台灣物價飛漲。米價一日數變，甚至出現「四萬塊舊台幣換一塊新台幣」的改革，造成無數中產階級破產。
+</div>`,
+                choices: [
+                    { text: "A. 【找角頭】 跟以前的兄弟「火旺」去搶軍火庫", target: 'm_rebel_start', desc: "政府不給活路，我們就自己拿。" },
+                    { text: "B. 【找官員】 去幫新來的外省官員做翻譯", target: 'm_collab_start', desc: "為了家人，我可以當狗。" }
+                ]
+            },
+            'm_rebel_start': {
+                ai_key: 'riot',
+                text: `你找到了以前一起在碼頭混的兄弟「火旺」。
+火旺眼神狂熱，腰間鼓鼓的，顯然藏著傢伙。
+「阿土，政府不給活路，我們就自己拿！」
+你們真的幹了。那一夜，槍聲響徹大稻埕。
+
+沒過多久，廣播宣布「四萬塊舊台幣換一塊新台幣」。
+無數人的畢生積蓄瞬間化為烏有，民怨沸騰到了極點。
+火旺拍著桌子：「這是搶劫！我們上山！鹿窟那邊還有兄弟在山裡，我們去打游擊！」
+你沒有退路了，跟著火旺躲進了深山。`,
+                next: 'm_rebel_hardship'
+            },
+            'm_rebel_hardship': {
+                ai_key: 'jungle',
+                text: `[第二章：山中歲月]
+山裡的生活不是電影裡的英雄故事。
+那是無止盡的飢餓、潮濕和恐懼。
+沒有米，你們吃樹皮、挖野菜、甚至捉老鼠吃。
+國軍開始圍山搜剿。飛機每天在頭頂盤旋，丟下炸彈和勸降傳單。
+
+身邊的兄弟一個個倒下。
+火旺也受了重傷，傷口化膿發臭。
+在一個雷雨交加的夜晚，他抓著你的手，氣若游絲：「阿土，我不行了...你也快走吧...不要死在這裡...」
+山下傳來了喊話聲：「投降不殺！舉報有賞！」`,
+                choices: [
+                    { text: "1. 【戰鬥到底】 寧死不降", target: 'm_end_martyr', desc: "這條命是撿回來的，要死也要站著死。" },
+                    { text: "2. 【投降告密】 拿火旺的人頭換生路", target: 'm_end_snitch', desc: "家裡的弟弟還在等藥，我不能死。" }
+                ]
+            },
+            'm_end_martyr': {
+                ai_key: 'jungle',
+                text: `你看著火旺的眼睛，那是你唯一的兄弟。
+你幫他合上了眼。
+你拿起他的槍，掛上最後一串手榴彈。
+你衝出了掩體，向著山下的部隊發起了最後的衝鋒。
+「幹你娘！」
+巨大的爆炸聲響徹山谷。
+
+你死在了那片無名的森林裡。雖然官方稱你是悍匪，但在大稻埕的傳說裡，你是最後的戰士。
+[結局：山中的英靈]`,
+                type: 'end'
+            },
+            'm_end_snitch': {
+                ai_key: 'slum',
+                text: `恐懼戰勝了義氣。你看著瀕死的火旺，心裡只有一個念頭：我要活下去。
+你趁著夜色下山投降了，供出了藏身處。
+部隊攻上山，剿滅了所有人。
+
+你拿到了鉅額獎金，治好了弟弟的病，還買了房子。
+但從此以後，大稻埕的人看到你都像看到鬼一樣躲開。
+小孩子會在你背後丟石頭，罵你是「抓耙子」、「賣友求榮」。
+你活在富足中，卻活在無盡的孤獨和鄙視裡。
+[結局：活著的鬼魂]`,
+                type: 'end'
+            },
+            'm_collab_start': {
+                ai_key: 'office',
+                text: `你選擇了低頭。
+你穿上唯一一件乾淨的襯衫，梳了油頭，去幫新來的接收官員做翻譯。
+官員叫老趙，肥頭大耳，滿嘴鄉音。他看不懂日文帳本，全靠你幫他清點工廠資產。
+
+你眼睜睜看著他把公家的機器當廢鐵賣掉中飽私囊，看著他把原來的工人趕走。
+鄰居罵你「三腳仔」、「漢奸」。你低著頭，假裝聽不見。
+你賺到了錢，家裡有米了，弟弟也有藥了。母親笑得很開心。
+
+這天，老趙要回大陸了，他把你叫到辦公室，指著一堆查封的工廠文件。
+「阿土，你這人懂事。這些廠子，我想辦法轉到你名下，你幫我看著，利潤我們分。」`,
+                next: 'm_collab_choice'
+            },
+            'm_collab_choice': {
+                ai_key: 'rich',
+                text: `[第三章：靈魂的價格]
+這是一個巨大的誘惑，也是一個巨大的陷阱。
+你可以利用這個機會，接收這些產業，一躍成為大老闆。
+但這意味著你要徹底變成一個剝削者，要對昔日的鄉親下手，要變得比老趙更狠。
+或者，你可以拒絕這筆不義之財，用現在的積蓄做點正當的小生意，求個心安。`,
+                choices: [
+                    { text: "1. 【成為大亨】 狠心併吞，成為商業鉅子", target: 'm_end_tycoon', desc: "錢就是力量，我要做人上人。" },
+                    { text: "2. 【開米行】 做小生意，接濟窮人", target: 'm_end_merchant', desc: "這錢拿著燙手，我還是老實做人吧。" }
+                ]
+            },
+            'm_end_tycoon': {
+                ai_key: 'rich',
+                text: `你心一橫，簽下了名字。
+你吞下了那些工廠，手段比老趙還狠。你壓榨工人，累積了巨大的財富。
+幾十年後，你成了台灣有名的大富豪。
+你住在陽明山的豪華別墅裡，出入有司機。
+
+但你的兒女都移民國外，不願回來見你。
+鄰居提起你的名字，依然會吐口水。
+你擁有了一切，卻也一無所有。
+[結局：孤獨的大亨]`,
+                type: 'end'
+            },
+            'm_end_merchant': {
+                ai_key: 'teahouse',
+                text: `你搖了搖頭：「趙長官，我沒那個命。」
+你拒絕了暴利。你用積蓄在大稻埕開了一間小小的米行。
+你誠信做生意，絕不摻假。災荒時，你還會施粥接濟窮人。
+
+慢慢地，大家忘記了你當過翻譯的事，開始尊敬地叫你「林老闆」。
+晚年，你坐在店門口泡茶，看著街道車水馬龍，兒孫繞膝。
+你雖然沒有大富大貴，但你晚上睡得很香。
+你無愧於心。這就是台灣人的韌性。
+[結局：大稻埕的商人]`,
+                type: 'end'
+            }
+        }
+    }
+};
+
+const Engine = {
+    state: { char: null },
+
+    start: function(charKey) {
+        this.state.char = charKey;
+        this.renderNode(Scripts[charKey].start);
+        document.getElementById('main-menu').style.display = 'none';
+    },
+
+    renderNode: function(nodeId) {
+        const charData = Scripts[this.state.char];
+        const node = charData.nodes[nodeId];
+        
+        // 1. 優先檢查是否有本地/線上圖片配置 (Config > Map)
+        const charKey = this.state.char;
+        const onlineImg = ImageConfig[charKey]; // 使用 Config 中的 URL
+        const spriteData = SpriteMap[charKey];
+        const gridPos = (spriteData && spriteData.map[nodeId]) ? spriteData.map[nodeId] : null;
+
+        const bgLayer = document.getElementById('bg-layer');
+
+        // 智慧判斷：如果有提供線上 URL 且該節點有對應格數 -> 使用 Sprite
+        // 否則使用 AI 圖片
+        if (onlineImg && onlineImg.trim() !== "" && gridPos) {
+            // 載入使用者提供的圖片
+            const img = new Image();
+            img.onload = () => {
+                bgLayer.style.backgroundImage = `url('${onlineImg}')`;
+                
+                // 智慧適配：判斷螢幕是否為直向（手機）
+                const isPortrait = window.innerHeight > window.innerWidth;
+                
+                if (isPortrait) {
+                    // 手機版：使用 Contain 邏輯 (完整顯示，會有上下黑邊)
+                    // 計算：讓單一格子的寬度等於螢幕寬度
+                    // 總圖寬 = 螢幕寬 * 列數
+                    // 總圖高 = (螢幕寬 / 格子寬高比) * 行數
+                    // 這裡簡化處理：直接設定背景大小為 (列數 * 100vw)
+                    // 但因為 height 是 auto，我們需要知道圖片比例。
+                    // 既然無法預知比例，我們回退到 'cover' 但靠上對齊，或者接受 CSS Sprite 的限制
+                    
+                    // CSS Sprite 在響應式下很難做 Contain，因為 background-size 是對整張圖的。
+                    // 最佳解：background-size: (cols * 100)% auto; (以寬度為基準)
+                    bgLayer.style.backgroundSize = `${spriteData.cols * 100}% auto`;
+                    
+                    // 重新計算位置百分比
+                    const xPos = (gridPos[0] / (spriteData.cols - 1)) * 100;
+                    // Y位置較難精準，因為高度是 auto。
+                    // 如果圖片是標準 grid，百分比依然有效。
+                    const yPos = (gridPos[1] / (spriteData.rows - 1)) * 100;
+                    
+                    bgLayer.style.backgroundPosition = `${xPos}% ${yPos}%`;
+                    
+                    // 為了置中顯示內容，可能需要調整 margin-top 或 flex 居中
+                    // 但 background-position 百分比是相對容器的。
+                    
+                } else {
+                    // 電腦版：維持原本的 Stretch/Cover 邏輯
+                    bgLayer.style.backgroundSize = `${spriteData.cols * 100}% ${spriteData.rows * 100}%`;
+                    const xPos = (gridPos[0] / (spriteData.cols - 1)) * 100;
+                    const yPos = (gridPos[1] / (spriteData.rows - 1)) * 100;
+                    bgLayer.style.backgroundPosition = `${xPos}% ${yPos}%`;
+                }
+            };
+            img.onerror = () => {
+                console.log("Online image failed, fallback to AI.");
+                this.useAiBg(node.ai_key);
+            };
+            img.src = onlineImg;
+        } else {
+            // 沒有提供圖片連結，使用 AI 繪圖
+            this.useAiBg(node.ai_key);
+        }
+
+        // 2. 顯示文字
+        const textArea = document.getElementById('text-area');
+        const block = document.createElement('div');
+        block.className = 'story-block';
+        
+        let html = node.text.replace(/\[(.*?)\]/g, '<span class="speaker-tag">$1</span>');
+        block.innerHTML = `<div class="story-text">${html}</div>`;
+        
+        textArea.appendChild(block);
+        
+        setTimeout(() => textArea.scrollTop = textArea.scrollHeight, 100);
+
+        // 3. 顯示選項
+        const nextBtn = document.getElementById('next-btn');
+        const choiceBox = document.getElementById('choice-box');
+        
+        choiceBox.innerHTML = '';
+        nextBtn.style.display = 'none';
+
+        if (node.choices) {
+            node.choices.forEach(c => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.innerHTML = `${c.text}<span class="choice-detail">${c.desc}</span>`;
+                btn.onclick = () => {
+                    choiceBox.innerHTML = '';
+                    this.renderNode(c.target);
+                };
+                choiceBox.appendChild(btn);
+            });
+        } else if (node.type === 'end') {
+            nextBtn.style.display = 'block';
+            nextBtn.innerText = '↺ 故事結束，返回標題';
+            nextBtn.onclick = () => location.reload();
+        } else if (node.next) {
+            nextBtn.style.display = 'block';
+            nextBtn.innerText = '▼ 繼續閱讀';
+            nextBtn.onclick = () => {
+                this.renderNode(node.next);
+                nextBtn.style.display = 'none';
+            };
+        }
+    },
+
+    useAiBg: function(key) {
+        if (!key) return;
+        const url = getAiBg(key);
+        const bgLayer = document.getElementById('bg-layer');
+        
+        // AI 圖片在手機版改為 contain (完整顯示)
+        const isPortrait = window.innerHeight > window.innerWidth;
+        if (isPortrait) {
+            bgLayer.style.backgroundSize = 'contain';
+            bgLayer.style.backgroundPosition = 'center top';
+            bgLayer.style.backgroundRepeat = 'no-repeat';
+        } else {
+            bgLayer.style.backgroundSize = 'cover';
+            bgLayer.style.backgroundPosition = 'center';
+        }
+        
+        bgLayer.style.backgroundImage = `url('${url}')`;
+    }
+};
+</script>
+</body>
+</html>

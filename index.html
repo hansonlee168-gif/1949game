@@ -9,8 +9,7 @@
 
         :root {
             --bg-color: #000;
-            --box-bg: #111;
-            --box-border: #444;
+            --text-area-bg: #151515;
             --text-color: #e0e0e0;
             --accent-color: #c0392b;
             --highlight-color: #f1c40f;
@@ -33,13 +32,13 @@
         #title-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 300;
+            z-index: 999;
             background: #000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: opacity 1s ease;
+            transition: opacity 0.5s ease;
         }
 
         #title-bg {
@@ -48,62 +47,39 @@
             background-size: cover;
             background-position: center;
             opacity: 0.5;
-            filter: sepia(0.6) contrast(1.2) brightness(0.4);
-            animation: panZoom 30s infinite alternate;
+            filter: sepia(0.5) brightness(0.5);
             z-index: -1;
+            /* 預設封面圖 */
             background-image: url('https://image.pollinations.ai/prompt/1949%20Keelung%20harbor%20dock%20heavy%20rain%20night%20dark%20noir%20photography%20cinematic%20steam?width=1280&height=720&nologo=true');
         }
 
-        .title-content {
-            text-align: center;
-            z-index: 1;
-            padding: 40px;
-            background: rgba(0,0,0,0.7);
-            border: 1px solid rgba(255,255,255,0.15);
-            backdrop-filter: blur(5px);
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-        }
-
         .main-title {
-            font-size: 5rem;
-            color: #e0e0e0;
-            margin: 0;
+            font-size: 4rem;
+            color: #fff;
             letter-spacing: 1rem;
             font-weight: 900;
-            text-shadow: 0 0 30px rgba(0,0,0,0.8);
+            text-shadow: 0 0 20px rgba(0,0,0,0.8);
             border-bottom: 2px solid var(--accent-color);
             padding-bottom: 20px;
             margin-bottom: 20px;
-        }
-
-        .sub-title {
-            font-size: 1.2rem;
-            color: var(--accent-color);
-            letter-spacing: 0.5rem;
-            margin-bottom: 40px;
-            font-weight: 300;
-            text-transform: uppercase;
+            text-align: center;
         }
 
         .start-btn {
             background: transparent;
             color: #fff;
-            border: 1px solid #666;
-            padding: 15px 50px;
+            border: 1px solid #aaa;
+            padding: 15px 40px;
             font-size: 1.2rem;
-            font-family: 'Noto Sans TC';
             letter-spacing: 3px;
             cursor: pointer;
             transition: all 0.3s;
-            text-transform: uppercase;
         }
 
         .start-btn:hover {
             background: var(--accent-color);
             border-color: var(--accent-color);
             color: #000;
-            font-weight: bold;
-            box-shadow: 0 0 20px rgba(192, 57, 43, 0.6);
         }
 
         /* ==================== 2. 主選單 (Main Menu) ==================== */
@@ -111,51 +87,46 @@
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background: #050505;
-            z-index: 200;
+            z-index: 800;
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            opacity: 0;
-            transition: opacity 1s ease;
         }
 
         #main-menu h1 {
-            font-size: 3.5rem;
+            font-size: 2.5rem;
             color: var(--accent-color);
-            margin-bottom: 10px;
+            margin-bottom: 40px;
             letter-spacing: 5px;
-            text-shadow: 0 0 20px rgba(192, 57, 43, 0.5);
-            font-weight: 900;
-            text-align: center;
         }
         
-        .role-container { display: flex; gap: 30px; margin-top: 30px; flex-wrap: wrap; justify-content: center; }
+        .role-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 1000px;}
         
         .role-card {
-            width: 260px;
-            height: 400px;
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            height: 350px;
             border: 1px solid #333;
-            background: linear-gradient(160deg, #151515 0%, #000 100%);
-            padding: 30px;
+            background: linear-gradient(160deg, #1a1a1a 0%, #000 100%);
+            padding: 25px;
             cursor: pointer;
-            transition: 0.4s;
+            transition: 0.3s;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            position: relative;
         }
 
         .role-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            transform: translateY(-5px);
             border-color: var(--highlight-color);
+            box-shadow: 0 10px 30px rgba(241, 196, 15, 0.1);
         }
 
-        .role-name { font-size: 2rem; color: #eee; font-family: 'Noto Serif TC'; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;}
-        .role-desc { font-size: 0.95rem; color: #888; line-height: 1.6; font-family: 'Noto Sans TC'; }
-        .role-stats { font-size: 0.75rem; color: var(--accent-color); margin-top: 10px; text-transform: uppercase; letter-spacing: 1px;}
+        .role-name { font-size: 1.8rem; color: #fff; border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 10px;}
+        .role-desc { font-size: 0.9rem; color: #aaa; line-height: 1.6; }
 
         /* ==================== 3. 遊戲介面 (Game View) ==================== */
         #game-view {
@@ -166,133 +137,85 @@
             z-index: 100;
         }
 
-        /* 上半部：圖像區 (彈性佔據剩餘空間) */
+        /* --- 上半部：圖像區 (65%) --- */
         #visual-stage {
-            flex-grow: 1;
+            flex: 65;
+            background-color: #000;
             position: relative;
-            background-color: #000; /* 全黑背景，營造影廳感 */
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
+            border-bottom: 2px solid #333;
         }
 
         #bg-layer {
-            /* 預設不設置大小，由 JS 動態計算 */
+            /* 這裡不設固定大小，由 JS 控制 */
             background-repeat: no-repeat;
-            opacity: 1;
             transition: opacity 0.3s ease;
         }
 
-        /* 下半部：對話框區 (固定高度) */
-        #dialogue-area {
-            height: 35vh;
-            min-height: 250px;
-            background-color: #000;
-            border-top: 2px solid #333;
+        /* --- 下半部：文字區 (35%) --- */
+        #text-panel {
+            flex: 35;
+            background-color: var(--text-area-bg);
             display: flex;
-            justify-content: center;
+            flex-direction: row; /* 電腦版左右排 */
             padding: 20px;
+            gap: 20px;
         }
 
-        /* 對話框本體 */
-        .dialogue-box {
-            width: 100%;
-            max-width: 1200px;
-            background-color: var(--box-bg);
-            border: 1px solid var(--box-border);
-            display: flex;
-            flex-direction: row;
-            padding: 25px;
-            gap: 25px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
-        }
-
-        /* 左側：文字內容 */
+        /* 文字內容 */
         #story-container {
-            flex: 2; 
+            flex: 7;
             overflow-y: auto;
-            padding-right: 20px;
+            padding-right: 15px;
             border-right: 1px solid #333;
         }
-
         #story-container::-webkit-scrollbar { width: 6px; }
-        #story-container::-webkit-scrollbar-track { background: #000; }
+        #story-container::-webkit-scrollbar-track { background: #111; }
         #story-container::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
 
-        .story-block {
-            margin-bottom: 20px;
-            animation: fadeIn 0.5s forwards;
-        }
-
-        .speaker-tag {
-            color: var(--highlight-color);
-            font-weight: bold;
-            margin-bottom: 10px;
-            display: block;
-            font-size: 1.1em;
-            letter-spacing: 1px;
-        }
-
-        .story-text {
-            font-size: 18px;
-            line-height: 1.8;
-            white-space: pre-wrap;
-            color: #ddd;
-            letter-spacing: 0.5px;
-        }
-
+        .story-block { margin-bottom: 20px; animation: fadeIn 0.5s; }
+        .speaker-tag { color: var(--highlight-color); font-weight: bold; margin-bottom: 8px; display: block; font-size: 1.1em; }
+        .story-text { font-size: 18px; line-height: 1.8; color: #ddd; white-space: pre-wrap; }
+        
         .history-note {
             background: rgba(138, 43, 226, 0.1);
-            border: 1px solid rgba(138, 43, 226, 0.3);
             border-left: 3px solid #8a2be2;
-            padding: 15px;
-            margin-top: 15px;
+            padding: 10px;
+            margin-top: 10px;
             font-size: 14px;
             color: #ccc;
-            border-radius: 4px;
-            font-family: 'Noto Sans TC';
         }
-
         .history-title {
             color: #d1c4e9;
             font-weight: bold;
-            font-size: 0.9em;
             display: block;
             margin-bottom: 5px;
         }
 
-        /* 右側：選項與控制 */
+        /* 操作按鈕 */
         #control-container {
-            flex: 1;
+            flex: 3;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            gap: 15px;
-            min-width: 250px;
+            gap: 10px;
+            justify-content: flex-start;
         }
 
         .choice-btn {
-            background: linear-gradient(to right, #222, #111);
-            color: #fff;
+            background: #222;
+            color: #ddd;
             border: 1px solid #444;
-            padding: 12px 15px;
+            padding: 12px;
             text-align: left;
             cursor: pointer;
-            font-family: 'Noto Sans TC';
             font-size: 15px;
             transition: 0.2s;
-            border-left: 3px solid transparent;
         }
-
-        .choice-btn:hover {
-            border-left: 3px solid var(--accent-color);
-            background: #333;
-            padding-left: 20px;
-            border-color: #666;
-        }
-
-        .choice-desc { display: block; font-size: 12px; color: #888; margin-top: 3px; }
+        .choice-btn:hover { background: #333; border-color: var(--accent-color); color: #fff; }
+        .choice-desc { display: block; font-size: 12px; color: #888; margin-top: 4px; }
 
         #next-btn {
             background: transparent;
@@ -301,40 +224,34 @@
             padding: 15px;
             width: 100%;
             cursor: pointer;
-            transition: 0.3s;
-            font-size: 16px;
-            letter-spacing: 3px;
             text-align: center;
         }
-        #next-btn:hover { color: #fff; border-color: #fff; background: rgba(255,255,255,0.05); }
+        #next-btn:hover { color: #fff; border-color: #fff; }
 
-        @keyframes panZoom { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* === 手機版響應式 (直向) === */
+        /* === 手機適配 === */
         @media (max-width: 768px) {
-            .main-title { font-size: 3rem; letter-spacing: 0.5rem; }
-            #main-menu h1 { font-size: 2.5rem; letter-spacing: 5px; }
-            .role-container { flex-direction: column; gap: 15px; }
-            .role-card { width: 100%; height: auto; min-height: 200px; }
+            #title-screen h1 { font-size: 2.5rem; letter-spacing: 5px; }
+            #main-menu h1 { font-size: 2rem; }
+            .role-container { flex-direction: column; align-items: center; }
+            .role-card { width: 90%; height: auto; min-height: 200px; }
 
-            /* 手機版：對話框變高一點 */
-            #dialogue-area { height: 45vh; padding: 10px; }
-            .dialogue-box { flex-direction: column; padding: 15px; gap: 10px; }
-
+            /* 手機版文字區改為上下排 */
+            #text-panel {
+                flex-direction: column;
+                padding: 15px;
+                gap: 10px;
+            }
             #story-container {
-                flex: 1; 
+                flex: 1;
                 border-right: none;
                 border-bottom: 1px solid #333;
                 padding-bottom: 10px;
-                padding-right: 0;
             }
-
-            #control-container { flex: 0 0 auto; min-width: 0; }
+            #control-container { flex: 0 0 auto; }
             .story-text { font-size: 16px; }
-            .choice-btn { padding: 12px; font-size: 14px; }
         }
 
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -342,72 +259,55 @@
     <!-- 1. 封面 -->
     <div id="title-screen">
         <div id="title-bg"></div>
-        <div class="title-content">
-            <h1 class="main-title">落地生根</h1>
-            <h2 class="sub-title">1949・TAIWAN</h2>
-            <button class="start-btn" onclick="Engine.enterMenu()">開始旅程</button>
-        </div>
-        <div class="footer">© 2024 Interactive History Project</div>
+        <h1 class="main-title">落地生根</h1>
+        <button class="start-btn" onclick="Engine.enterMenu()">開始旅程</button>
     </div>
 
     <!-- 2. 主選單 -->
     <div id="main-menu">
         <h1>選擇你的命運</h1>
-        <div class="menu-subtitle">三種身份，三種截然不同的歷史記憶</div>
         <div class="role-container">
             <div class="role-card" onclick="Engine.start('chen')">
-                <div>
-                    <div class="role-name">陳光文</div>
-                    <div class="role-desc">流亡學生。<br>在白色恐怖的陰影下，尋找失蹤的導師與理想。</div>
-                </div>
-                <div class="role-stats">歷史焦點：學運、白色恐怖</div>
+                <div class="role-name">陳光文</div>
+                <div class="role-desc">流亡學生。在白色恐怖的陰影下，尋找失蹤的導師與理想。</div>
             </div>
             <div class="role-card" onclick="Engine.start('li')">
-                <div>
-                    <div class="role-name">李國強</div>
-                    <div class="role-desc">流亡軍眷。<br>在族群衝突與省籍情結的夾縫中，尋找生存的尊嚴。</div>
-                </div>
-                <div class="role-stats">歷史焦點：眷村、族群融合</div>
+                <div class="role-name">李國強</div>
+                <div class="role-desc">流亡軍眷。在族群衝突與省籍情結的夾縫中，尋找生存的尊嚴。</div>
             </div>
             <div class="role-card" onclick="Engine.start('lim')">
-                <div>
-                    <div class="role-name">林阿土</div>
-                    <div class="role-desc">返鄉軍伕。<br>在惡性通膨與政權更迭的混亂中，試圖守護一家溫飽。</div>
-                </div>
-                <div class="role-stats">歷史焦點：惡性通膨、228陰影</div>
+                <div class="role-name">林阿土</div>
+                <div class="role-desc">返鄉軍伕。在惡性通膨與政權更迭的混亂中，試圖守護一家溫飽。</div>
             </div>
         </div>
     </div>
 
-    <!-- 3. 遊戲介面 -->
+    <!-- 3. 遊戲畫面 -->
     <div id="game-view">
+        <!-- 上方圖片區 -->
         <div id="visual-stage">
             <div id="bg-layer"></div>
         </div>
-        
-        <div id="dialogue-area">
-            <div class="dialogue-box">
-                <div id="story-container"></div>
-                <div id="control-container">
-                    <div id="choice-box"></div>
-                    <button id="next-btn" onclick="Engine.next()">▼ 繼續</button>
-                </div>
+        <!-- 下方文字區 -->
+        <div id="text-panel">
+            <div id="story-container"></div>
+            <div id="control-container">
+                <div id="choice-box"></div>
+                <button id="next-btn" onclick="Engine.next()">▼ 繼續</button>
             </div>
         </div>
     </div>
 
 <script>
 // =========================================================
-// ★★★ 圖片設定區 (恢復為簡潔檔名) ★★★
+// ★★★ 圖片設定區 ★★★
 // =========================================================
 const ImageConfig = {
-    chen: "chen_sprites.jpg", 
-    li: "li_sprites.jpg",   
-    lim: "lin_sprites.jpg"   
+    chen: "image_c3d83e.jpg", 
+    li: "image_c3d838.jpg",   
+    lim: "image_c0ad41.jpg"
 };
 
-// =========================================================
-// 圖集定義
 const SpriteMap = {
     chen: {
         cols: 5, rows: 3,
@@ -435,27 +335,7 @@ const SpriteMap = {
     }
 };
 
-function getAiBg(keyword) {
-    const base = "https://image.pollinations.ai/prompt/";
-    const prompts = {
-        'rain': '1949 Keelung harbor dock heavy rain night dark noir photography cinematic',
-        'train': 'inside vintage steam train 1949 crowded refugees dim light sepia',
-        'slum': '1949 Taipei slum alleyway night poverty vintage noir',
-        'school': 'old japanese house taipei 1949 sealed door white paper tape',
-        'rich': '1949 vintage luxury apartment interior taipei window rain view',
-        'admin': '1949 Taipei government building red brick exterior sunny harsh shadows',
-        'dock': '1949 harbor workers carrying crates sweat sun exhausted vintage',
-        'interrogation': 'dark interrogation room spotlight chair fear cinematic noir',
-        'jungle': 'Taiwan mountain jungle guerilla camp rain fog green vintage',
-        'office': '1949 office desk piles of paper busy vintage',
-        'riot': '1949 street riot fire chaos night angry crowd cinematic',
-        'sunset': 'Lonely figure watching sunset ocean horizon melancholic 1949'
-    };
-    const p = prompts[keyword] || prompts['rain'];
-    return `${base}${encodeURIComponent(p)}?width=1280&height=720&nologo=true&seed=${Math.floor(Math.random()*9999)}`;
-}
-
-// 劇本資料
+// 劇本資料 (已補回 ai_key)
 const Scripts = {
     chen: {
         start: 'c_1',
@@ -515,7 +395,7 @@ const Engine = {
             document.getElementById('title-screen').style.display = 'none';
             document.getElementById('main-menu').style.display = 'flex';
             setTimeout(() => document.getElementById('main-menu').style.opacity = 1, 50);
-        }, 1000);
+        }, 500);
     },
 
     start: function(charKey) {
@@ -524,6 +404,27 @@ const Engine = {
         document.getElementById('main-menu').style.display = 'none';
         document.getElementById('game-view').style.display = 'flex';
         this.renderNode(this.state.currentNodeId);
+    },
+
+    // 取得 AI 圖片 URL
+    getAiBg: function(key) {
+        const base = "https://image.pollinations.ai/prompt/";
+        const prompts = {
+            'rain': '1949 Keelung harbor dock heavy rain night dark noir photography cinematic',
+            'train': 'inside vintage steam train 1949 crowded refugees dim light sepia',
+            'slum': '1949 Taipei slum alleyway night poverty vintage noir',
+            'school': 'old japanese house taipei 1949 sealed door white paper tape',
+            'rich': '1949 vintage luxury apartment interior taipei window rain view',
+            'admin': '1949 Taipei government building red brick exterior sunny harsh shadows',
+            'dock': '1949 harbor workers carrying crates sweat sun exhausted vintage',
+            'interrogation': 'dark interrogation room spotlight chair fear cinematic noir',
+            'jungle': 'Taiwan mountain jungle guerilla camp rain fog green vintage',
+            'office': '1949 office desk piles of paper busy vintage',
+            'riot': '1949 street riot fire chaos night angry crowd cinematic',
+            'sunset': 'Lonely figure watching sunset ocean horizon melancholic 1949'
+        };
+        const p = prompts[key] || prompts['rain'];
+        return `${base}${encodeURIComponent(p)}?width=1280&height=720&nologo=true&seed=${Math.floor(Math.random()*9999)}`;
     },
 
     renderNode: function(nodeId) {
@@ -543,32 +444,21 @@ const Engine = {
                 const container = document.getElementById('visual-stage');
                 const cw = container.clientWidth;
                 const ch = container.clientHeight;
-                
-                // 單格圖片的原始尺寸
                 const cellW = img.width / spriteData.cols;
                 const cellH = img.height / spriteData.rows;
                 
-                // 計算縮放比例 (Contain: 確保完整顯示，不裁切)
                 const scale = Math.min(cw / cellW, ch / cellH);
-                
-                // 渲染後的大小
                 const renderW = cellW * scale;
                 const renderH = cellH * scale;
                 
-                // 設定 bgLayer 大小為「單格渲染後的大小」
                 bgLayer.style.width = `${renderW}px`;
                 bgLayer.style.height = `${renderH}px`;
-                
-                // 設定背景圖大小為「整張圖渲染後的大小」
                 bgLayer.style.backgroundImage = `url('${onlineImg}')`;
                 bgLayer.style.backgroundSize = `${img.width * scale}px ${img.height * scale}px`;
                 
-                // 修正背景位置：負的偏移量
                 const posX = -1 * gridPos[0] * renderW;
                 const posY = -1 * gridPos[1] * renderH;
                 bgLayer.style.backgroundPosition = `${posX}px ${posY}px`;
-                
-                // 移除任何預設樣式
                 bgLayer.style.backgroundRepeat = 'no-repeat';
             };
             img.onerror = () => this.useAiBg(node.ai_key);
@@ -583,6 +473,7 @@ const Engine = {
         block.className = 'story-block';
         let html = node.text.replace(/\[(.*?)\]/g, '<span class="speaker-tag">$1</span>');
         block.innerHTML = `<div class="story-text">${html}</div>`;
+        storyContainer.innerHTML = '';
         storyContainer.appendChild(block);
         setTimeout(() => storyContainer.scrollTop = storyContainer.scrollHeight, 100);
 
@@ -612,9 +503,8 @@ const Engine = {
 
     useAiBg: function(key) {
         if (!key) return;
-        const url = getAiBg(key);
+        const url = this.getAiBg(key); // Use the method inside Engine
         const bgLayer = document.getElementById('bg-layer');
-        // AI 圖片邏輯：填滿容器
         bgLayer.style.width = '100%';
         bgLayer.style.height = '100%';
         bgLayer.style.backgroundSize = 'cover';

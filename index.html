@@ -9,7 +9,7 @@
 
         :root {
             --bg-color: #000;
-            --text-area-bg: #151515;
+            --text-panel-bg: #111;
             --text-color: #e0e0e0;
             --accent-color: #c0392b;
             --highlight-color: #f1c40f;
@@ -23,12 +23,13 @@
             font-family: 'Noto Serif TC', serif;
             overflow: hidden;
             height: 100vh;
+            width: 100vw;
             color: var(--text-color);
             display: flex;
             flex-direction: column;
         }
 
-        /* ==================== 1. 封面 (Title Screen) ==================== */
+        /* ==================== 1. 封面層 ==================== */
         #title-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -41,15 +42,13 @@
             transition: opacity 0.5s ease;
         }
 
-        #title-bg {
+        #title-bg-img {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover;
-            background-position: center;
+            object-fit: cover;
             opacity: 0.5;
             filter: sepia(0.5) brightness(0.5);
             z-index: -1;
-            background-image: url('https://image.pollinations.ai/prompt/1949%20Keelung%20harbor%20dock%20heavy%20rain%20night%20dark%20noir%20photography%20cinematic%20steam?width=1280&height=720&nologo=true');
         }
 
         .main-title {
@@ -74,14 +73,9 @@
             cursor: pointer;
             transition: all 0.3s;
         }
+        .start-btn:hover { background: var(--accent-color); border-color: var(--accent-color); color: #000; }
 
-        .start-btn:hover {
-            background: var(--accent-color);
-            border-color: var(--accent-color);
-            color: #000;
-        }
-
-        /* ==================== 2. 主選單 (Main Menu) ==================== */
+        /* ==================== 2. 主選單層 ==================== */
         #main-menu {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -94,13 +88,7 @@
             padding: 20px;
         }
 
-        #main-menu h1 {
-            font-size: 2.5rem;
-            color: var(--accent-color);
-            margin-bottom: 40px;
-            letter-spacing: 5px;
-        }
-        
+        #main-menu h1 { font-size: 2.5rem; color: var(--accent-color); margin-bottom: 30px; letter-spacing: 5px; }
         .role-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 1000px;}
         
         .role-card {
@@ -117,17 +105,11 @@
             flex-direction: column;
             justify-content: space-between;
         }
-
-        .role-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--highlight-color);
-            box-shadow: 0 10px 30px rgba(241, 196, 15, 0.1);
-        }
-
+        .role-card:hover { transform: translateY(-5px); border-color: var(--highlight-color); }
         .role-name { font-size: 1.8rem; color: #fff; border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 10px;}
         .role-desc { font-size: 0.9rem; color: #aaa; line-height: 1.6; }
 
-        /* ==================== 3. 遊戲介面 (Game View) ==================== */
+        /* ==================== 3. 遊戲介面 (Flex Layout) ==================== */
         #game-view {
             display: none;
             width: 100%;
@@ -136,9 +118,9 @@
             z-index: 100;
         }
 
-        /* --- 上半部：圖像區 (65%) --- */
+        /* --- 上半部：圖像區 (60%) --- */
         #visual-stage {
-            flex: 65;
+            flex: 6; 
             background-color: #000;
             position: relative;
             overflow: hidden;
@@ -148,28 +130,27 @@
             border-bottom: 2px solid #333;
         }
 
-        #bg-layer {
-            /* 預設隱藏，載入成功後顯示 */
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: contain; /* 確保完整顯示 */
-            opacity: 0; 
-            transition: opacity 0.3s ease;
+        #scene-img {
             width: 100%;
             height: 100%;
+            object-fit: contain; /* 確保完整顯示，不裁切，自動補黑邊 */
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            display: block;
         }
 
-        /* --- 下半部：文字區 (35%) --- */
+        /* --- 下半部：文字區 (40%) --- */
         #text-panel {
-            flex: 35;
-            background-color: var(--text-area-bg);
+            flex: 4; 
+            background-color: var(--text-panel-bg);
             display: flex;
             flex-direction: row;
-            padding: 20px;
-            gap: 20px;
+            padding: 20px 40px;
+            gap: 30px;
+            min-height: 0; /* 防止溢出 */
         }
 
-        /* 文字內容 */
+        /* 左側：劇情文字 */
         #story-container {
             flex: 7;
             overflow-y: auto;
@@ -181,7 +162,7 @@
         #story-container::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
 
         .story-block { margin-bottom: 20px; animation: fadeIn 0.5s; }
-        .speaker-tag { color: var(--highlight-color); font-weight: bold; margin-bottom: 8px; display: block; font-size: 1.1em; }
+        .speaker-tag { color: var(--highlight-color); font-weight: bold; margin-bottom: 8px; display: block; font-size: 1.1em; border-left: 3px solid var(--accent-color); padding-left: 10px; }
         .story-text { font-size: 18px; line-height: 1.8; color: #ddd; white-space: pre-wrap; }
         
         .history-note {
@@ -191,46 +172,50 @@
             margin-top: 10px;
             font-size: 14px;
             color: #ccc;
+            border-radius: 4px;
         }
-        .history-title {
-            color: #d1c4e9;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-        }
+        .history-title { color: #d1c4e9; font-weight: bold; display: block; margin-bottom: 5px; }
 
-        /* 操作按鈕 */
+        /* 右側：操作按鈕區 (確保固定高度與顯示) */
         #control-container {
             flex: 3;
             display: flex;
             flex-direction: column;
             gap: 10px;
             justify-content: flex-start;
+            overflow-y: auto;
+            min-width: 200px;
         }
 
         .choice-btn {
             background: #222;
             color: #ddd;
             border: 1px solid #444;
-            padding: 12px;
+            padding: 15px;
             text-align: left;
             cursor: pointer;
             font-size: 15px;
             transition: 0.2s;
+            width: 100%;
         }
         .choice-btn:hover { background: #333; border-color: var(--accent-color); color: #fff; }
         .choice-desc { display: block; font-size: 12px; color: #888; margin-top: 4px; }
 
         #next-btn {
-            background: transparent;
-            border: 1px dashed #555;
-            color: #888;
-            padding: 15px;
+            background: #1a1a1a;
+            border: 1px solid #555;
+            color: #fff;
+            padding: 20px;
             width: 100%;
             cursor: pointer;
             text-align: center;
+            font-size: 16px;
+            letter-spacing: 2px;
+            transition: 0.2s;
+            margin-top: 10px;
+            display: none; /* 由 JS 控制 */
         }
-        #next-btn:hover { color: #fff; border-color: #fff; }
+        #next-btn:hover { background: #333; border-color: #fff; }
 
         /* === 手機適配 === */
         @media (max-width: 768px) {
@@ -239,6 +224,7 @@
             .role-container { flex-direction: column; align-items: center; }
             .role-card { width: 90%; height: auto; min-height: 200px; }
 
+            /* 手機版：文字區改為上下排列 */
             #text-panel {
                 flex-direction: column;
                 padding: 15px;
@@ -250,8 +236,10 @@
                 border-bottom: 1px solid #333;
                 padding-bottom: 10px;
             }
-            #control-container { flex: 0 0 auto; }
+            #control-container { flex: 0 0 auto; min-height: auto; }
             .story-text { font-size: 16px; }
+            .choice-btn { padding: 12px; }
+            #next-btn { padding: 15px; }
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -261,9 +249,12 @@
 
     <!-- 1. 封面 -->
     <div id="title-screen">
-        <div id="title-bg"></div>
-        <h1 class="main-title">落地生根</h1>
-        <button class="start-btn" onclick="Engine.enterMenu()">開始旅程</button>
+        <img id="title-bg-img" src="https://image.pollinations.ai/prompt/1949%20Keelung%20harbor%20dock%20heavy%20rain%20night%20dark%20noir%20photography%20cinematic%20steam?width=1280&height=720&nologo=true" alt="Cover">
+        <div style="position:relative; z-index:1; text-align:center;">
+            <h1 class="main-title">落地生根</h1>
+            <button class="start-btn" onclick="Engine.enterMenu()">開始旅程</button>
+        </div>
+        <div style="position:absolute; bottom:20px; color:#666; font-size:0.8rem;">© 2024 Interactive History Project</div>
     </div>
 
     <!-- 2. 主選單 -->
@@ -285,10 +276,10 @@
         </div>
     </div>
 
-    <!-- 3. 遊戲畫面 -->
+    <!-- 3. 遊戲介面 -->
     <div id="game-view">
         <div id="visual-stage">
-            <div id="bg-layer"></div>
+            <img id="scene-img" src="" alt="Scene Image">
         </div>
         <div id="text-panel">
             <div id="story-container"></div>
@@ -302,26 +293,25 @@
 <script>
 // =========================================================
 // ★★★ 每一幕的圖片設定區 ★★★
-// 請確認您的圖片檔案名稱與下方完全一致
 // =========================================================
 const SceneImages = {
-    // --- 陳光文線 (14張) ---
-    'c_1': "c_1.jpg",               // 基隆港檢查哨
-    'c_dead_1': "c_dead_1.jpg",     // 死亡結局
-    'c_poor_start': "c_poor_start.jpg", // 賄賂動作特寫
-    'c_poor_train': "c_poor_train.jpg", // 火車上
-    'c_poor_meeting': "c_poor_meeting.jpg", // 台北車站遇小林
-    'c_poor_sell': "c_poor_sell.jpg",   // 賣書結局
-    'c_poor_teacher': "c_poor_teacher.jpg", // 溫州街查封
-    'c_poor_decision': "c_poor_decision.jpg", // 巷弄抉擇
-    'c_end_hero': "c_end_hero.jpg",   // 綠島結局
-    'c_end_guilt': "c_end_guilt.jpg", // 逃亡結局
-    'c_rich_apt': "c_rich_apt.jpg",   // 公寓
-    'c_rich_news': "c_rich_news.jpg", // 看報紙
-    'c_rich_bribe': "c_rich_bribe.jpg", // 賄賂失敗
-    'c_rich_us': "c_rich_us.jpg",     // 美國結局
+    // --- 陳光文線 ---
+    'c_1': "c_1.jpg",               
+    'c_dead_1': "c_dead_1.jpg",     
+    'c_poor_start': "c_poor_start.jpg", 
+    'c_poor_train': "c_poor_train.jpg", 
+    'c_poor_meeting': "c_poor_meeting.jpg", 
+    'c_poor_sell': "c_poor_sell.jpg",   
+    'c_poor_teacher': "c_poor_teacher.jpg", 
+    'c_poor_decision': "c_poor_decision.jpg", 
+    'c_end_hero': "c_end_hero.jpg",   
+    'c_end_guilt': "c_end_guilt.jpg", 
+    'c_rich_apt': "c_rich_apt.jpg",   
+    'c_rich_news': "c_rich_news.jpg", 
+    'c_rich_bribe': "c_rich_bribe.jpg", 
+    'c_rich_us': "c_rich_us.jpg",     
 
-    // --- 李國強線 (10張) ---
+    // --- 李國強線 ---
     'l_1': "l_1.jpg",             
     'l_dead': "l_dead.jpg",                  
     'l_dignity_start': "l_dignity_start.jpg",         
@@ -333,7 +323,7 @@ const SceneImages = {
     'l_end_agent': "l_end_agent.jpg",             
     'l_end_betray': "l_end_betray.jpg",            
 
-    // --- 林阿土線 (9張) ---
+    // --- 林阿土線 ---
     'm_1': "m_1.jpg",            
     'm_rebel_start': "m_rebel_start.jpg",           
     'm_rebel_hardship': "m_rebel_hardship.jpg",        
@@ -345,12 +335,12 @@ const SceneImages = {
     'm_end_merchant': "m_end_merchant.jpg"           
 };
 
-// 劇本資料 (已加入 c_poor_start)
+// 劇本資料 (修復了連結)
 const Scripts = {
     chen: {
         start: 'c_1',
         nodes: {
-            'c_1': { text: `[陳光文 - 第一章：黑雨]\n1949年1月27日，基隆港。\n天空像破了個洞，黑色的雨水夾雜著煤煙傾瀉而下。\n你緊緊抱著懷裡的皮箱，裡面藏著一本魯迅的《狂人日記》。\n\n前方是憲兵檢查哨。「下一個！箱子打開！」\n如果書被發現，你就是「赤色分子」。\n\n<div class="history-note"><span class="history-title">歷史背景：動員戡亂時期</span>1949年戒嚴令前夕，持有左翼書籍可被視為「匪諜」，輕則入獄，重則槍決。</div>`, choices: [{text: "賄賂憲兵 (失去金錢)", target: 'c_poor_start', desc: "保住書，但身無分文"}, {text: "丟棄禁書 (失去理想)", target: 'c_rich_apt', desc: "保住錢，但靈魂空缺"}, {text: "硬抗檢查", target: 'c_dead_1', desc: "堅持到底"}] },
+            'c_1': { text: `[陳光文 - 第一章：黑雨]\n1949年1月27日，基隆港。\n天空像破了個洞，黑色的雨水夾雜著煤煙傾瀉而下。\n你緊緊抱著懷裡的皮箱，裡面藏著一本魯迅的《狂人日記》。\n\n前方是憲兵檢查哨。「下一個！箱子打開！」\n如果書被發現，你就是「赤色分子」。\n\n<div class="history-note"><span class="history-title">歷史背景：動員戡亂時期</span>1949年戒嚴令前夕，持有左翼書籍可被視為「匪諜」，輕則入獄，重則槍決。</div>`, choices: [{text: "賄賂憲兵 (失去金錢)", target: 'c_poor_start', desc: "保住書，但身無分文"}, {text: "丟棄禁書 (失去理想)", target: 'c_rich_apt', desc: "保住錢，但靈魂空缺"}, {text: "硬抗檢查", target: 'c_dead_1', desc: "死亡結局"}] },
             'c_dead_1': { text: `「人權？這裡只認拳頭！」\n槍托重重砸在你的太陽穴上。你在抵達台灣的第一個小時，就成為了一具無名屍體。\n[結局：死於非命]`, type: 'end' },
             'c_poor_start': { text: `你咬著牙，伸手摸進內襯，觸碰到了那捲帶著體溫的美金。\n那是父親變賣了老家祖宅才換來的，是你全部的盤纏。\n你顫抖著手，將錢塞進憲兵油膩的手心。\n憲兵瞥了一眼，拇指快速搓了搓，嘴角勾起一抹貪婪的笑，揮手放行。`, next: 'c_poor_train' },
             'c_poor_train': { text: `你抱著皮箱衝進雨中。你保住了書，但也失去了在這個陌生島嶼生存的資本。\n你混上了一列開往台北的蒸汽火車，擠在流亡的人群中。\n車廂裡充滿了汗臭味和焦慮的氣息。每個人都神色匆匆，彷彿背後有鬼在追。`, next: 'c_poor_meeting' },
@@ -369,7 +359,7 @@ const Scripts = {
     li: {
         start: 'l_1',
         nodes: {
-            'l_1': { text: `[李國強 - 第一章：被踐踏的勳章]\n1949年2月，台北行政公署。烈日當空。\n你穿著破爛軍服，手裡緊捏著一枚「青天白日勳章」。\n衛兵一把拍掉了你的勳章，它滾進了臭水溝。\n「現在將軍都討飯，你一個連長的兒子算個屁？滾！」\n\n<div class="history-note"><span class="history-title">歷史背景：外省難民潮</span>約120萬人從大陸撤退至台灣，初期政府無力安置，許多軍眷流離失所。</div>`, choices: [{text: "隱忍撿起 (自尊)", target: 'l_dignity_start', desc: "去碼頭做苦力"}, {text: "下跪乞食 (黑化)", target: 'l_dog_start', desc: "為了活下去"}, {text: "拔刀拼命", target: 'l_dead'desc: "搏命"}] },
+            'l_1': { text: `[李國強 - 第一章：被踐踏的勳章]\n1949年2月，台北行政公署。烈日當空。\n你穿著破爛軍服，手裡緊捏著一枚「青天白日勳章」。\n衛兵一把拍掉了你的勳章，它滾進了臭水溝。\n「現在將軍都討飯，你一個連長的兒子算個屁？滾！」\n\n<div class="history-note"><span class="history-title">歷史背景：外省難民潮</span>約120萬人從大陸撤退至台灣，初期政府無力安置，許多軍眷流離失所。</div>`, choices: [{text: "隱忍撿起 (自尊)", target: 'l_dignity_start', desc: "去碼頭做苦力"}, {text: "下跪乞食 (黑化)", target: 'l_dog_start', desc: "為了活下去"}, {text: "拔刀拼命", target: 'l_dead', desc: "死亡結局"}] },
             'l_dead': { text: `槍聲響起。你倒在血泊中，死死盯著水溝裡的勳章。\n[結局：街頭喋血]`, type: 'end' },
             'l_dignity_start': { text: `你默默跳進水溝撿起勳章，擦乾淨。\n你轉身走向基隆碼頭，當起了搬運工。\n你是唯一的「阿山」，語言不通，受盡排擠。`, next: 'l_dignity_event' },
             'l_dignity_event': { text: `午餐時，一個本地工人故意踢翻了你的粥。\n「滾回去！這裡沒你的飯！」\n你餓得發抖，拳頭握緊。你想殺人，但看著地上的米粒，你想起了父親。`, choices: [{text: "暴力反擊", target: 'l_dignity_fight', desc: "贏得恐懼"}, {text: "溝通化解", target: 'l_dignity_talk', desc: "贏得尊重"}] },
@@ -420,25 +410,23 @@ const Engine = {
     renderNode: function(nodeId) {
         const charData = Scripts[this.state.char];
         const node = charData.nodes[nodeId];
-        const bgLayer = document.getElementById('bg-layer');
+        const sceneImg = document.getElementById('scene-img');
         
-        // --- 單張圖片顯示邏輯 (無切割) ---
+        // --- 圖片處理 (單圖) ---
         const imgFile = SceneImages[nodeId];
+        
+        // 重置圖片透明度 (過場效果)
+        sceneImg.style.opacity = 0;
 
-        if (imgFile && imgFile.trim() !== "") {
-            const img = new Image();
-            img.onload = () => {
-                bgLayer.style.backgroundImage = `url('${imgFile}')`;
-                bgLayer.style.opacity = 1;
-            };
-            img.onerror = () => {
-                console.log("Image not found: " + imgFile);
-                bgLayer.style.opacity = 0; // 失敗顯示黑屏
-            };
-            img.src = imgFile;
-        } else {
-            bgLayer.style.opacity = 0;
-        }
+        setTimeout(() => {
+            if (imgFile && imgFile.trim() !== "") {
+                sceneImg.src = imgFile;
+                sceneImg.onload = () => { sceneImg.style.opacity = 1; };
+                sceneImg.onerror = () => { sceneImg.style.opacity = 0; };
+            } else {
+                sceneImg.style.opacity = 0;
+            }
+        }, 200);
 
         // --- 文字與選項 ---
         const storyContainer = document.getElementById('story-container');
@@ -470,7 +458,11 @@ const Engine = {
         } else if (node.next) {
             nextBtn.style.display = 'block';
             nextBtn.innerText = '▼ 繼續';
-            nextBtn.onclick = () => { this.renderNode(node.next); nextBtn.style.display = 'none'; };
+            nextBtn.onclick = () => { 
+                // 關鍵修正：點擊後隱藏按鈕，並確保有傳入 nodeId
+                nextBtn.style.display = 'none'; 
+                this.renderNode(node.next); 
+            };
         }
     },
     

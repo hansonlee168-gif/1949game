@@ -86,9 +86,12 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            overflow-y: auto; /* 允許捲動 */
         }
 
-        #main-menu h1 { font-size: 2.5rem; color: var(--accent-color); margin-bottom: 30px; letter-spacing: 5px; }
+        #main-menu h1 { font-size: 2.5rem; color: var(--accent-color); margin-bottom: 30px; letter-spacing: 5px; text-align: center; }
+        .menu-subtitle { margin-bottom: 30px; text-align: center; color: #888; }
+
         .role-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 1000px;}
         
         .role-card {
@@ -108,13 +111,14 @@
         .role-card:hover { transform: translateY(-5px); border-color: var(--highlight-color); }
         .role-name { font-size: 1.8rem; color: #fff; border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 10px;}
         .role-desc { font-size: 0.9rem; color: #aaa; line-height: 1.6; }
+        .role-stats { font-size: 0.8rem; color: var(--accent-color); margin-top: auto; padding-top: 10px; }
 
         /* ==================== 3. 遊戲介面 (Flex Layout) ==================== */
         #game-view {
             display: none;
             width: 100%;
             height: 100%;
-            flex-direction: column;
+            flex-direction: column; /* 上下排列 */
             z-index: 100;
         }
 
@@ -133,7 +137,7 @@
         #scene-img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* 確保完整顯示，不裁切，自動補黑邊 */
+            object-fit: contain; /* 關鍵：完整顯示，不裁切，自動留黑邊 */
             opacity: 0;
             transition: opacity 0.5s ease;
             display: block;
@@ -144,10 +148,10 @@
             flex: 4; 
             background-color: var(--text-panel-bg);
             display: flex;
-            flex-direction: row;
+            flex-direction: row; /* 電腦版左右並排 */
             padding: 20px 40px;
             gap: 30px;
-            min-height: 0; /* 防止溢出 */
+            min-height: 0; /* 防止 Flex 子元素溢出 */
         }
 
         /* 左側：劇情文字 */
@@ -176,7 +180,7 @@
         }
         .history-title { color: #d1c4e9; font-weight: bold; display: block; margin-bottom: 5px; }
 
-        /* 右側：操作按鈕區 (確保固定高度與顯示) */
+        /* 右側：操作按鈕 */
         #control-container {
             flex: 3;
             display: flex;
@@ -184,7 +188,6 @@
             gap: 10px;
             justify-content: flex-start;
             overflow-y: auto;
-            min-width: 200px;
         }
 
         .choice-btn {
@@ -213,33 +216,67 @@
             letter-spacing: 2px;
             transition: 0.2s;
             margin-top: 10px;
-            display: none; /* 由 JS 控制 */
+            display: none; /* 由 JS 控制顯示 */
         }
         #next-btn:hover { background: #333; border-color: #fff; }
 
-        /* === 手機適配 === */
+        /* === 手機適配優化 === */
         @media (max-width: 768px) {
-            #title-screen h1 { font-size: 2.5rem; letter-spacing: 5px; }
-            #main-menu h1 { font-size: 2rem; }
-            .role-container { flex-direction: column; align-items: center; }
-            .role-card { width: 90%; height: auto; min-height: 200px; }
+            /* 1. 封面調整 */
+            .main-title { font-size: 3rem; letter-spacing: 0.5rem; }
+            
+            /* 2. 主選單：改為靠上排列，解決中間過空問題 */
+            #main-menu {
+                justify-content: flex-start; /* 靠上對齊 */
+                padding-top: 60px; /* 頂部留白 */
+            }
+            #main-menu h1 { font-size: 2rem; margin-bottom: 10px; }
+            .menu-subtitle { margin-bottom: 30px; font-size: 0.9rem; }
+            
+            .role-container { 
+                flex-direction: column; 
+                align-items: center; 
+                gap: 15px; 
+                padding-bottom: 40px; /* 底部留白方便滑動 */
+            }
+            .role-card { 
+                width: 100%; 
+                height: auto; /* 高度自動 */
+                min-height: auto; /* 取消最小高度限制 */
+                padding: 20px;
+            }
+            .role-name { font-size: 1.5rem; }
+            .role-desc { font-size: 1rem; line-height: 1.5; } /* 字體微調 */
 
-            /* 手機版：文字區改為上下排列 */
+            /* 3. 遊戲介面：調整圖文比例 */
+            #visual-stage {
+                flex: 4; /* 圖片佔 40% (縮小) */
+                min-height: 30vh; /* 至少 30% 高度 */
+            }
+            
             #text-panel {
+                flex: 6; /* 文字佔 60% (放大) */
                 flex-direction: column;
-                padding: 15px;
+                padding: 15px 20px;
                 gap: 10px;
             }
+            
             #story-container {
-                flex: 1;
+                flex: 1; /* 佔據剩餘空間 */
                 border-right: none;
                 border-bottom: 1px solid #333;
                 padding-bottom: 10px;
+                padding-right: 0;
             }
-            #control-container { flex: 0 0 auto; min-height: auto; }
-            .story-text { font-size: 16px; }
-            .choice-btn { padding: 12px; }
-            #next-btn { padding: 15px; }
+            
+            #control-container { 
+                flex: 0 0 auto; /* 高度隨內容自適應 */
+                height: auto;
+                max-height: 40%; /* 防止按鈕區佔太多 */
+            }
+            
+            .story-text { font-size: 17px; line-height: 1.6; } /* 增加行距 */
+            .choice-btn { padding: 15px; font-size: 16px; }
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -254,24 +291,34 @@
             <h1 class="main-title">落地生根</h1>
             <button class="start-btn" onclick="Engine.enterMenu()">開始旅程</button>
         </div>
-        <div style="position:absolute; bottom:20px; color:#666; font-size:0.8rem;">© 2025 Interactive History Project</div>
+        <div style="position:absolute; bottom:20px; color:#666; font-size:0.8rem;">© 2024 Interactive History Project</div>
     </div>
 
     <!-- 2. 主選單 -->
     <div id="main-menu">
         <h1>選擇你的命運</h1>
+        <div class="menu-subtitle">三種身份，三種截然不同的歷史記憶</div>
         <div class="role-container">
             <div class="role-card" onclick="Engine.start('chen')">
-                <div class="role-name">陳光文</div>
-                <div class="role-desc">流亡學生。在白色恐怖的陰影下，尋找失蹤的導師與理想。</div>
+                <div>
+                    <div class="role-name">陳光文</div>
+                    <div class="role-desc">流亡學生。<br>在白色恐怖的陰影下，尋找失蹤的導師與理想。</div>
+                </div>
+                <div class="role-stats">歷史焦點：學運、白色恐怖</div>
             </div>
             <div class="role-card" onclick="Engine.start('li')">
-                <div class="role-name">李國強</div>
-                <div class="role-desc">流亡軍眷。在族群衝突與省籍情結的夾縫中，尋找生存的尊嚴。</div>
+                <div>
+                    <div class="role-name">李國強</div>
+                    <div class="role-desc">流亡軍眷。<br>在族群衝突與省籍情結的夾縫中，尋找生存的尊嚴。</div>
+                </div>
+                <div class="role-stats">歷史焦點：眷村、族群融合</div>
             </div>
             <div class="role-card" onclick="Engine.start('lim')">
-                <div class="role-name">林阿土</div>
-                <div class="role-desc">返鄉軍伕。在惡性通膨與政權更迭的混亂中，試圖守護一家溫飽。</div>
+                <div>
+                    <div class="role-name">林阿土</div>
+                    <div class="role-desc">返鄉軍伕。<br>在惡性通膨與政權更迭的混亂中，試圖守護一家溫飽。</div>
+                </div>
+                <div class="role-stats">歷史焦點：惡性通膨、228陰影</div>
             </div>
         </div>
     </div>
@@ -292,7 +339,7 @@
 
 <script>
 // =========================================================
-// ★★★ 每一幕的圖片設定區 ★★★
+// ★★★ 每一幕的圖片設定區 (請確保檔名正確) ★★★
 // =========================================================
 const SceneImages = {
     // --- 陳光文線 ---
@@ -422,6 +469,7 @@ const Engine = {
             if (imgFile && imgFile.trim() !== "") {
                 sceneImg.src = imgFile;
                 sceneImg.onload = () => { sceneImg.style.opacity = 1; };
+                // 失敗時不顯示破碎圖示，直接隱藏
                 sceneImg.onerror = () => { sceneImg.style.opacity = 0; };
             } else {
                 sceneImg.style.opacity = 0;
@@ -459,7 +507,7 @@ const Engine = {
             nextBtn.style.display = 'block';
             nextBtn.innerText = '▼ 繼續';
             nextBtn.onclick = () => { 
-                // 關鍵修正：點擊後隱藏按鈕，並確保有傳入 nodeId
+                // 點擊後隱藏按鈕，避免重複觸發，等待下一頁渲染
                 nextBtn.style.display = 'none'; 
                 this.renderNode(node.next); 
             };

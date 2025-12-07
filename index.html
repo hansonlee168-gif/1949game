@@ -86,12 +86,9 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            overflow-y: auto; /* 允許捲動 */
         }
 
-        #main-menu h1 { font-size: 2.5rem; color: var(--accent-color); margin-bottom: 30px; letter-spacing: 5px; text-align: center; }
-        .menu-subtitle { margin-bottom: 30px; text-align: center; color: #888; }
-
+        #main-menu h1 { font-size: 2.5rem; color: var(--accent-color); margin-bottom: 30px; letter-spacing: 5px; }
         .role-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 1000px;}
         
         .role-card {
@@ -111,14 +108,13 @@
         .role-card:hover { transform: translateY(-5px); border-color: var(--highlight-color); }
         .role-name { font-size: 1.8rem; color: #fff; border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 10px;}
         .role-desc { font-size: 0.9rem; color: #aaa; line-height: 1.6; }
-        .role-stats { font-size: 0.8rem; color: var(--accent-color); margin-top: auto; padding-top: 10px; }
 
-        /* ==================== 3. 遊戲介面 (Flex Layout) ==================== */
+        /* ==================== 3. 遊戲介面 ==================== */
         #game-view {
             display: none;
             width: 100%;
             height: 100%;
-            flex-direction: column; /* 上下排列 */
+            flex-direction: column;
             z-index: 100;
         }
 
@@ -135,9 +131,9 @@
         }
 
         #scene-img {
-            width: 85%;
-            height: 85%;
-            object-fit: contain; /* 關鍵：完整顯示，不裁切，自動留黑邊 */
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
             opacity: 0;
             transition: opacity 0.5s ease;
             display: block;
@@ -148,10 +144,10 @@
             flex: 4; 
             background-color: var(--text-panel-bg);
             display: flex;
-            flex-direction: row; /* 電腦版左右並排 */
+            flex-direction: row;
             padding: 20px 40px;
             gap: 30px;
-            min-height: 0; /* 防止 Flex 子元素溢出 */
+            min-height: 0;
         }
 
         /* 左側：劇情文字 */
@@ -216,67 +212,50 @@
             letter-spacing: 2px;
             transition: 0.2s;
             margin-top: 10px;
-            display: none; /* 由 JS 控制顯示 */
+            display: none;
         }
         #next-btn:hover { background: #333; border-color: #fff; }
 
-        /* === 手機適配優化 === */
+        /* === ★★★ 手機適配優化 (V18) ★★★ === */
         @media (max-width: 768px) {
-            /* 1. 封面調整 */
-            .main-title { font-size: 3rem; letter-spacing: 0.5rem; }
-            
-            /* 2. 主選單：改為靠上排列，解決中間過空問題 */
-            #main-menu {
-                justify-content: flex-start; /* 靠上對齊 */
-                padding-top: 60px; /* 頂部留白 */
-            }
-            #main-menu h1 { font-size: 2rem; margin-bottom: 10px; }
-            .menu-subtitle { margin-bottom: 30px; font-size: 0.9rem; }
-            
-            .role-container { 
-                flex-direction: column; 
-                align-items: center; 
-                gap: 15px; 
-                padding-bottom: 40px; /* 底部留白方便滑動 */
-            }
-            .role-card { 
-                width: 100%; 
-                height: auto; /* 高度自動 */
-                min-height: auto; /* 取消最小高度限制 */
-                padding: 20px;
-            }
-            .role-name { font-size: 1.5rem; }
-            .role-desc { font-size: 1rem; line-height: 1.5; } /* 字體微調 */
+            #title-screen h1 { font-size: 2.5rem; letter-spacing: 5px; }
+            #main-menu h1 { font-size: 2rem; }
+            .role-container { flex-direction: column; align-items: center; }
+            .role-card { width: 90%; height: auto; min-height: 200px; }
 
-            /* 3. 遊戲介面：調整圖文比例 */
-            #visual-stage {
-                flex: 4; /* 圖片佔 40% (縮小) */
-                min-height: 30vh; /* 至少 30% 高度 */
-            }
-            
+            /* 手機版：文字區改為上下排列 */
             #text-panel {
-                flex: 6; /* 文字佔 60% (放大) */
                 flex-direction: column;
-                padding: 15px 20px;
-                gap: 10px;
+                padding: 15px;
+                gap: 8px; /* 縮小間距 */
             }
-            
+
+            /* 手機版：劇情文字區強制縮小，留空間給按鈕 */
             #story-container {
-                flex: 1; /* 佔據剩餘空間 */
+                flex: 0 0 40%; /* 強制高度為文字面板的 40% */
                 border-right: none;
                 border-bottom: 1px solid #333;
                 padding-bottom: 10px;
-                padding-right: 0;
+                padding-right: 5px; /* 稍微留一點右邊距給捲軸 */
             }
-            
+
+            /* 手機版：操作按鈕區佔據剩餘空間 */
             #control-container { 
-                flex: 0 0 auto; /* 高度隨內容自適應 */
-                height: auto;
-                max-height: 40%; /* 防止按鈕區佔太多 */
+                flex: 1; 
+                min-height: 0; /* 允許內容捲動 */
+                padding-top: 5px;
+                gap: 8px; /* 按鈕間距縮小一點 */
+            }
+
+            /* 按鈕樣式緊湊化 */
+            .choice-btn { 
+                padding: 12px; 
+                font-size: 15px; 
+                white-space: normal; /* 允許文字換行 */
             }
             
-            .story-text { font-size: 17px; line-height: 1.6; } /* 增加行距 */
-            .choice-btn { padding: 15px; font-size: 16px; }
+            .story-text { font-size: 16px; line-height: 1.6; }
+            #next-btn { padding: 15px; }
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -297,28 +276,18 @@
     <!-- 2. 主選單 -->
     <div id="main-menu">
         <h1>選擇你的命運</h1>
-        <div class="menu-subtitle">三種身份，三種截然不同的歷史記憶</div>
         <div class="role-container">
             <div class="role-card" onclick="Engine.start('chen')">
-                <div>
-                    <div class="role-name">陳光文</div>
-                    <div class="role-desc">流亡學生。<br>在白色恐怖的陰影下，尋找失蹤的導師與理想。</div>
-                </div>
-                <div class="role-stats">歷史焦點：學運、白色恐怖</div>
+                <div class="role-name">陳光文</div>
+                <div class="role-desc">流亡學生。在白色恐怖的陰影下，尋找失蹤的導師與理想。</div>
             </div>
             <div class="role-card" onclick="Engine.start('li')">
-                <div>
-                    <div class="role-name">李國強</div>
-                    <div class="role-desc">流亡軍眷。<br>在族群衝突與省籍情結的夾縫中，尋找生存的尊嚴。</div>
-                </div>
-                <div class="role-stats">歷史焦點：眷村、族群融合</div>
+                <div class="role-name">李國強</div>
+                <div class="role-desc">流亡軍眷。在族群衝突與省籍情結的夾縫中，尋找生存的尊嚴。</div>
             </div>
             <div class="role-card" onclick="Engine.start('lim')">
-                <div>
-                    <div class="role-name">林阿土</div>
-                    <div class="role-desc">返鄉軍伕。<br>在惡性通膨與政權更迭的混亂中，試圖守護一家溫飽。</div>
-                </div>
-                <div class="role-stats">歷史焦點：惡性通膨、228陰影</div>
+                <div class="role-name">林阿土</div>
+                <div class="role-desc">返鄉軍伕。在惡性通膨與政權更迭的混亂中，試圖守護一家溫飽。</div>
             </div>
         </div>
     </div>
@@ -382,54 +351,54 @@ const SceneImages = {
     'm_end_merchant': "m_end_merchant.jpg"           
 };
 
-// 劇本資料 (修復了連結)
+// 劇本資料
 const Scripts = {
     chen: {
         start: 'c_1',
         nodes: {
-            'c_1': { text: `[陳光文 - 第一章：黑雨]\n1949年1月27日，基隆港。\n天空像破了個洞，黑色的雨水夾雜著煤煙傾瀉而下。\n你緊緊抱著懷裡的皮箱，裡面藏著一本魯迅的《狂人日記》。\n\n前方是憲兵檢查哨。「下一個！箱子打開！」\n如果書被發現，你就是「赤色分子」。\n\n<div class="history-note"><span class="history-title">歷史背景：動員戡亂時期</span>1949年戒嚴令前夕，持有左翼書籍可被視為「匪諜」，輕則入獄，重則槍決。</div>`, choices: [{text: "賄賂憲兵 (失去金錢)", target: 'c_poor_start', desc: "保住書，但身無分文"}, {text: "丟棄禁書 (失去理想)", target: 'c_rich_apt', desc: "保住錢，但靈魂空缺"}, {text: "硬抗檢查", target: 'c_dead_1', desc: "勇往直前"}] },
-            'c_dead_1': { text: `「人權？這裡只認拳頭！」\n槍托重重砸在你的太陽穴上。你在抵達台灣的第一個小時，就成為了一具無名屍體。\n[結局：死於非命]`, type: 'end' },
-            'c_poor_start': { text: `你咬著牙，伸手摸進內襯，觸碰到了那捲帶著體溫的美金。\n那是父親變賣了老家祖宅才換來的，是你全部的盤纏。\n你顫抖著手，將錢塞進憲兵油膩的手心。\n憲兵瞥了一眼，拇指快速搓了搓，嘴角勾起一抹貪婪的笑，揮手放行。`, next: 'c_poor_train' },
-            'c_poor_train': { text: `你抱著皮箱衝進雨中。你保住了書，但也失去了在這個陌生島嶼生存的資本。\n你混上了一列開往台北的蒸汽火車，擠在流亡的人群中。\n車廂裡充滿了汗臭味和焦慮的氣息。每個人都神色匆匆，彷彿背後有鬼在追。`, next: 'c_poor_meeting' },
-            'c_poor_meeting': { text: `[第二章：流浪台北]\n台北車站大廳睡滿了流浪者。你付不起旅館錢，只能睡在騎樓。\n第三天，一個落魄學生小林告訴你：「台大抓得很兇，你的張教授恐怕也出事了。」\n飢餓感正在吞噬你的理智。你還要堅持嗎？`, choices: [{text: "堅持尋找導師", target: 'c_poor_teacher', desc: "就算餓死也要去"}, {text: "賣書換饅頭", target: 'c_poor_sell', desc: "放棄理想求生存"}] },
-            'c_poor_sell': { text: `飢餓戰勝了理想。你把《狂人日記》賣給了舊書攤，換了幾個肉包子。\n後來你找了工廠工作，庸碌一生，再也不敢看書。\n[結局：庸碌的倖存者]`, type: 'end' },
-            'c_poor_teacher': { text: `你咬牙堅持，找到了溫州街。導師家門口貼著兩條刺眼的白色封條——「查封」。\n你感到一陣暈眩。就在這時，一個戴鴨舌帽的年輕人撞了你一下。\n「別出聲。」他塞給你一個油紙包，「老師被帶走了。憲兵在找這份名單！快走！」`, next: 'c_poor_decision' },
-            'c_poor_decision': { text: `[第三章：生死名單]\n包裹裡是一張去香港的船票，和一份密密麻麻的讀書會名單。\n警笛聲逼近。這份名單是幾十個學生的催命符。\n帶著它，一旦被抓就是死刑。燒了它，拿船票走是生路。\n\n<div class="history-note"><span class="history-title">歷史背景：白色恐怖</span>1949年四六事件後，針對校園的肅清行動持續多年。</div>`, choices: [{text: "通知同志 (犧牲)", target: 'c_end_hero', desc: "成為火種"}, {text: "銷毀名單 (逃亡)", target: 'c_end_guilt', desc: "背負愧疚活著"}] },
-            'c_end_hero': { text: `你把船票撕了。那晚，你在台北巷弄裡狂奔，敲開了一扇又一扇門。\n當你通知完最後一個人時，天亮了。憲兵的槍口對準了你。\n你在綠島被關了15年。但當你出獄那天，碼頭上站滿了當年因你而活下來的學生。\n[結局：綠島的燈塔]`, type: 'end' },
-            'c_end_guilt': { text: `恐懼壓垮了你。你燒了名單，拿著船票逃往美國。\n你成了知名學者，但終身未婚。每晚夢裡都是大火和呼救聲。\n[結局：倖存者的愧疚]`, type: 'end' },
-            'c_rich_apt': { text: `你把書丟進海裡。你保住了金條，住進了台北的公寓。\n生活富足，但心裡空蕩蕩的。那種空虛感，比飢餓更難受。`, next: 'c_rich_news' },
-            'c_rich_news': { text: `[第二章：金錢的界線]\n幾個月後，報紙說張教授被捕了，是「匪諜」。\n你有錢，或許可以疏通關係。但這是政治案件，沾上就是一身腥。\n特務無孔不入，也許你現在已經被監視了。`, choices: [{text: "花錢救人", target: 'c_rich_bribe', desc: "極高風險"}, {text: "去美國", target: 'c_rich_us', desc: "徹底逃避"}] },
-            'c_rich_bribe': { text: `你帶著金條去疏通。官員收了錢，反手把你抓了。「資助匪諜？」\n你在獄中見到了導師，他滿眼憐憫。你終於明白，有些東西是錢買不到的。\n[結局：散財消災(失敗)]`, type: 'end' },
-            'c_rich_us': { text: `你選擇了最理智的路。你飛往美國，娶妻生子，再也不說中文。\n你把那個1949年的自己徹底埋葬了。\n[結局：漂泊的異鄉人]`, type: 'end' }
+            'c_1': { ai_key: 'rain', text: `[陳光文 - 第一章：黑雨]\n1949年1月27日，基隆港。\n天空像破了個洞，黑色的雨水夾雜著煤煙傾瀉而下。\n你緊緊抱著懷裡的皮箱，裡面藏著一本魯迅的《狂人日記》。\n\n前方是憲兵檢查哨。「下一個！箱子打開！」\n如果書被發現，你就是「赤色分子」。\n\n<div class="history-note"><span class="history-title">歷史背景：動員戡亂時期</span>1949年戒嚴令前夕，持有左翼書籍可被視為「匪諜」，輕則入獄，重則槍決。</div>`, choices: [{text: "賄賂憲兵 (失去金錢)", target: 'c_poor_start', desc: "保住書，但身無分文"}, {text: "丟棄禁書 (失去理想)", target: 'c_rich_apt', desc: "保住錢，但靈魂空缺"}, {text: "硬抗檢查", target: 'c_dead_1', desc: "死亡結局"}] },
+            'c_dead_1': { ai_key: 'rain', text: `「人權？這裡只認拳頭！」\n槍托重重砸在你的太陽穴上。你在抵達台灣的第一個小時，就成為了一具無名屍體。\n[結局：死於非命]`, type: 'end' },
+            'c_poor_start': { ai_key: 'rain', text: `你咬著牙，伸手摸進內襯，觸碰到了那捲帶著體溫的美金。\n那是父親變賣了老家祖宅才換來的，是你全部的盤纏。\n你顫抖著手，將錢塞進憲兵油膩的手心。\n憲兵瞥了一眼，拇指快速搓了搓，嘴角勾起一抹貪婪的笑，揮手放行。`, next: 'c_poor_train' },
+            'c_poor_train': { ai_key: 'train', text: `你抱著皮箱衝進雨中。你保住了書，但也失去了在這個陌生島嶼生存的資本。\n你混上了一列開往台北的蒸汽火車，擠在流亡的人群中。\n車廂裡充滿了汗臭味和焦慮的氣息。每個人都神色匆匆，彷彿背後有鬼在追。`, next: 'c_poor_meeting' },
+            'c_poor_meeting': { ai_key: 'slum', text: `[第二章：流浪台北]\n台北車站大廳睡滿了流浪者。你付不起旅館錢，只能睡在騎樓。\n第三天，一個落魄學生小林告訴你：「台大抓得很兇，你的張教授恐怕也出事了。」\n飢餓感正在吞噬你的理智。你還要堅持嗎？`, choices: [{text: "堅持尋找導師", target: 'c_poor_teacher', desc: "就算餓死也要去"}, {text: "賣書換饅頭", target: 'c_poor_sell', desc: "放棄理想求生存"}] },
+            'c_poor_sell': { ai_key: 'slum', text: `飢餓戰勝了理想。你把《狂人日記》賣給了舊書攤，換了幾個肉包子。\n後來你找了工廠工作，庸碌一生，再也不敢看書。\n[結局：庸碌的倖存者]`, type: 'end' },
+            'c_poor_teacher': { ai_key: 'school', text: `你咬牙堅持，找到了溫州街。導師家門口貼著兩條刺眼的白色封條——「查封」。\n你感到一陣暈眩。就在這時，一個戴鴨舌帽的年輕人撞了你一下。\n「別出聲。」他塞給你一個油紙包，「老師被帶走了。憲兵在找這份名單！快走！」`, next: 'c_poor_decision' },
+            'c_poor_decision': { ai_key: 'slum', text: `[第三章：生死名單]\n包裹裡是一張去香港的船票，和一份密密麻麻的讀書會名單。\n警笛聲逼近。這份名單是幾十個學生的催命符。\n帶著它，一旦被抓就是死刑。燒了它，拿船票走是生路。\n\n<div class="history-note"><span class="history-title">歷史背景：白色恐怖</span>1949年四六事件後，針對校園的肅清行動持續多年。</div>`, choices: [{text: "通知同志 (犧牲)", target: 'c_end_hero', desc: "成為火種"}, {text: "銷毀名單 (逃亡)", target: 'c_end_guilt', desc: "背負愧疚活著"}] },
+            'c_end_hero': { ai_key: 'interrogation', text: `你把船票撕了。那晚，你在台北巷弄裡狂奔，敲開了一扇又一扇門。\n當你通知完最後一個人時，天亮了。憲兵的槍口對準了你。\n你在綠島被關了15年。但當你出獄那天，碼頭上站滿了當年因你而活下來的學生。\n[結局：綠島的燈塔]`, type: 'end' },
+            'c_end_guilt': { ai_key: 'sunset', text: `恐懼壓垮了你。你燒了名單，拿著船票逃往美國。\n你成了知名學者，但終身未婚。每晚夢裡都是大火和呼救聲。\n[結局：倖存者的愧疚]`, type: 'end' },
+            'c_rich_apt': { ai_key: 'rich', text: `你把書丟進海裡。你保住了金條，住進了台北的公寓。\n生活富足，但心裡空蕩蕩的。那種空虛感，比飢餓更難受。`, next: 'c_rich_news' },
+            'c_rich_news': { ai_key: 'rich', text: `[第二章：金錢的界線]\n幾個月後，報紙說張教授被捕了，是「匪諜」。\n你有錢，或許可以疏通關係。但這是政治案件，沾上就是一身腥。\n特務無孔不入，也許你現在已經被監視了。`, choices: [{text: "花錢救人", target: 'c_rich_bribe', desc: "極高風險"}, {text: "去美國", target: 'c_rich_us', desc: "徹底逃避"}] },
+            'c_rich_bribe': { ai_key: 'interrogation', text: `你帶著金條去疏通。官員收了錢，反手把你抓了。「資助匪諜？」\n你在獄中見到了導師，他滿眼憐憫。你終於明白，有些東西是錢買不到的。\n[結局：散財消災(失敗)]`, type: 'end' },
+            'c_rich_us': { ai_key: 'rich', text: `你選擇了最理智的路。你飛往美國，娶妻生子，再也不說中文。\n你把那個1949年的自己徹底埋葬了。\n[結局：漂泊的異鄉人]`, type: 'end' }
         }
     },
     li: {
         start: 'l_1',
         nodes: {
-            'l_1': { text: `[李國強 - 第一章：被踐踏的勳章]\n1949年2月，台北行政公署。烈日當空。\n你穿著破爛軍服，手裡緊捏著一枚「青天白日勳章」。\n衛兵一把拍掉了你的勳章，它滾進了臭水溝。\n「現在將軍都討飯，你一個連長的兒子算個屁？滾！」\n\n<div class="history-note"><span class="history-title">歷史背景：外省難民潮</span>約120萬人從大陸撤退至台灣，初期政府無力安置，許多軍眷流離失所。</div>`, choices: [{text: "隱忍撿起 (自尊)", target: 'l_dignity_start', desc: "去碼頭做苦力"}, {text: "下跪乞食 (黑化)", target: 'l_dog_start', desc: "為了活下去"}, {text: "拔刀拼命", target: 'l_dead', desc: "有勇無謀"}] },
-            'l_dead': { text: `槍聲響起。你倒在血泊中，死死盯著水溝裡的勳章。\n[結局：街頭喋血]`, type: 'end' },
-            'l_dignity_start': { text: `你默默跳進水溝撿起勳章，擦乾淨。\n你轉身走向基隆碼頭，當起了搬運工。\n你是唯一的「阿山」，語言不通，受盡排擠。`, next: 'l_dignity_event' },
-            'l_dignity_event': { text: `午餐時，一個本地工人故意踢翻了你的粥。\n「滾回去！這裡沒你的飯！」\n你餓得發抖，拳頭握緊。你想殺人，但看著地上的米粒，你想起了父親。`, choices: [{text: "暴力反擊", target: 'l_dignity_fight', desc: "贏得恐懼"}, {text: "溝通化解", target: 'l_dignity_talk', desc: "贏得尊重"}] },
-            'l_dignity_fight': { text: `你把他打得半死。從此沒人敢惹你，也沒人理你。\n後來你去修築中橫公路，斷了一條腿。\n你孤獨終老在榮民之家，只有那枚勳章陪著你。\n[結局：孤獨的榮民]`, type: 'end' },
-            'l_dignity_talk': { text: `你忍住氣，撿起地上的米粒吃。\n「俺只是想活著。」你用蹩腳的台語說。\n旁邊一位阿婆遞給你一碗熱湯。那碗湯很熱，暖進了心裡。\n後來你入贅了，學會了台語，落地生根。\n[結局：落地生根]`, type: 'end' },
-            'l_dog_start': { text: `你跪下了。你吃到了發霉的麵包。\n一個特務看中了你的狠勁。\n「想不想報仇？加入我們，這把槍能幫你找回尊嚴。」`, next: 'l_dog_mission' },
-            'l_dog_mission': { text: `[第三章：染血的雙手]\n你成了特務。第一次任務是抓一個像你父親的老人。\n長官冷冷地說：「動手。證明你的忠誠。」`, choices: [{text: "開槍抓人", target: 'l_end_agent', desc: "徹底黑化"}, {text: "放走老人", target: 'l_end_betray', desc: "良心發現"}] },
-            'l_end_agent': { text: `你開了槍。你有了權力，但也瘋了。\n晚年你患上失智，整天對著空氣求饒：「我不是壞人！我只是聽命令！」\n[結局：體制的囚徒]`, type: 'end' },
-            'l_end_betray': { text: `你放走了老人，被長官從背後處決。\n但你死得像個人。你彷彿看見父親在對你微笑。\n[結局：遲來的良知]`, type: 'end' }
+            'l_1': { ai_key: 'admin', text: `[李國強 - 第一章：被踐踏的勳章]\n1949年2月，台北行政公署。烈日當空。\n你穿著破爛軍服，手裡緊捏著一枚「青天白日勳章」。\n衛兵一把拍掉了你的勳章，它滾進了臭水溝。\n「現在將軍都討飯，你一個連長的兒子算個屁？滾！」\n\n<div class="history-note"><span class="history-title">歷史背景：外省難民潮</span>約120萬人從大陸撤退至台灣，初期政府無力安置，許多軍眷流離失所。</div>`, choices: [{text: "隱忍撿起 (自尊)", target: 'l_dignity_start', desc: "去碼頭做苦力"}, {text: "下跪乞食 (黑化)", target: 'l_dog_start', desc: "為了活下去"}, {text: "拔刀拼命", target: 'l_dead', desc: "死亡結局"}] },
+            'l_dead': { ai_key: 'admin', text: `槍聲響起。你倒在血泊中，死死盯著水溝裡的勳章。\n[結局：街頭喋血]`, type: 'end' },
+            'l_dignity_start': { ai_key: 'dock', text: `你默默跳進水溝撿起勳章，擦乾淨。\n你轉身走向基隆碼頭，當起了搬運工。\n你是唯一的「阿山」，語言不通，受盡排擠。`, next: 'l_dignity_event' },
+            'l_dignity_event': { ai_key: 'dock', text: `午餐時，一個本地工人故意踢翻了你的粥。\n「滾回去！這裡沒你的飯！」\n你餓得發抖，拳頭握緊。你想殺人，但看著地上的米粒，你想起了父親。`, choices: [{text: "暴力反擊", target: 'l_dignity_fight', desc: "贏得恐懼"}, {text: "溝通化解", target: 'l_dignity_talk', desc: "贏得尊重"}] },
+            'l_dignity_fight': { ai_key: 'jungle', text: `你把他打得半死。從此沒人敢惹你，也沒人理你。\n後來你去修築中橫公路，斷了一條腿。\n你孤獨終老在榮民之家，只有那枚勳章陪著你。\n[結局：孤獨的榮民]`, type: 'end' },
+            'l_dignity_talk': { ai_key: 'teahouse', text: `你忍住氣，撿起地上的米粒吃。\n「俺只是想活著。」你用蹩腳的台語說。\n旁邊一位阿婆遞給你一碗熱湯。那碗湯很熱，暖進了心裡。\n後來你入贅了，學會了台語，落地生根。\n[結局：落地生根]`, type: 'end' },
+            'l_dog_start': { ai_key: 'admin', text: `你跪下了。你吃到了發霉的麵包。\n一個特務看中了你的狠勁。\n「想不想報仇？加入我們，這把槍能幫你找回尊嚴。」`, next: 'l_dog_mission' },
+            'l_dog_mission': { ai_key: 'interrogation', text: `[第三章：染血的雙手]\n你成了特務。第一次任務是抓一個像你父親的老人。\n長官冷冷地說：「動手。證明你的忠誠。」`, choices: [{text: "開槍抓人", target: 'l_end_agent', desc: "徹底黑化"}, {text: "放走老人", target: 'l_end_betray', desc: "良心發現"}] },
+            'l_end_agent': { ai_key: 'interrogation', text: `你開了槍。你有了權力，但也瘋了。\n晚年你患上失智，整天對著空氣求饒：「我不是壞人！我只是聽命令！」\n[結局：體制的囚徒]`, type: 'end' },
+            'l_end_betray': { ai_key: 'rain', text: `你放走了老人，被長官從背後處決。\n但你死得像個人。你彷彿看見父親在對你微笑。\n[結局：遲來的良知]`, type: 'end' }
         }
     },
     lim: {
         start: 'm_1',
         nodes: {
-            'm_1': { text: `[林阿土 - 第一章：廢紙般的錢]\n1949年3月，大稻埕。\n你從南洋戰場回來，發現一麻袋舊台幣買不到一碗米。\n米行老闆說：「現在錢是紙糊的，沒人收。」\n弟弟病重急需藥。你需要真正的錢。\n\n<div class="history-note"><span class="history-title">歷史背景：惡性通膨</span>戰後初期，米價一日數變，甚至出現「四萬塊舊台幣換一塊新台幣」的改革，造成無數家庭破產。</div>`, choices: [{text: "找角頭火旺 (反抗)", target: 'm_rebel_start', desc: "搶軍火庫"}, {text: "幫官員翻譯 (順從)", target: 'm_collab_start', desc: "當買辦"}] },
-            'm_rebel_start': { text: `你跟火旺搶了派出所。\n隨後「四萬換一塊」發布，民怨沸騰。你們決定上山打游擊。`, next: 'm_rebel_hardship' },
-            'm_rebel_hardship': { text: `[第二章：山中歲月]\n山裡的生活是地獄。兄弟一個個死於飢餓和疾病。\n火旺重傷，勸你拿他的人頭換生路。\n山下傳來喊話：「投降不殺！」`, choices: [{text: "戰鬥到底", target: 'm_end_martyr', desc: "寧死不降"}, {text: "投降告密", target: 'm_end_snitch', desc: "為了活下去"}] },
-            'm_end_martyr': { text: `你衝向了包圍圈。\n你死在了深山裡，成為了大稻埕的傳說。\n[結局：山中的英靈]`, type: 'end' },
-            'm_end_snitch': { text: `你出賣了兄弟，換了錢救了弟弟。\n但一輩子被鄰居戳脊梁骨，罵你是「抓耙子」。\n[結局：活著的鬼魂]`, type: 'end' },
-            'm_collab_start': { text: `你幫官員翻譯，被罵漢奸。但你家裡有米了。\n這天，官員要回大陸了，把查封的工廠交給你處理。`, next: 'm_collab_choice' },
-            'm_collab_choice': { text: `[第三章：靈魂的價格]\n這是巨大的誘惑。你可以吞下工廠成為大老闆，但要對鄉親下手。\n或者，拒絕不義之財，做點小生意贖罪。`, choices: [{text: "成為大亨", target: 'm_end_tycoon', desc: "富有但孤獨"}, {text: "開米行", target: 'm_end_merchant', desc: "平凡心安"}] },
-            'm_end_tycoon': { text: `你成了大富豪，住陽明山別墅。\n但兒女都不願回來見你，鄰居依然吐口水。\n[結局：孤獨的大亨]`, type: 'end' },
-            'm_end_merchant': { text: `你開了米行，接濟窮人。\n慢慢地，大家尊稱你一聲「林老闆」。晚年兒孫繞膝，無愧於心。\n[結局：大稻埕的商人]`, type: 'end' }
+            'm_1': { ai_key: 'slum', text: `[林阿土 - 第一章：廢紙般的錢]\n1949年3月，大稻埕。\n你從南洋戰場回來，發現一麻袋舊台幣買不到一碗米。\n米行老闆說：「現在錢是紙糊的，沒人收。」\n弟弟病重急需藥。你需要真正的錢。\n\n<div class="history-note"><span class="history-title">歷史背景：惡性通膨</span>戰後初期，米價一日數變，甚至出現「四萬塊舊台幣換一塊新台幣」的改革，造成無數家庭破產。</div>`, choices: [{text: "找角頭火旺 (反抗)", target: 'm_rebel_start', desc: "搶軍火庫"}, {text: "幫官員翻譯 (順從)", target: 'm_collab_start', desc: "當買辦"}] },
+            'm_rebel_start': { ai_key: 'riot', text: `你跟火旺搶了派出所。\n隨後「四萬換一塊」發布，民怨沸騰。你們決定上山打游擊。`, next: 'm_rebel_hardship' },
+            'm_rebel_hardship': { ai_key: 'jungle', text: `[第二章：山中歲月]\n山裡的生活是地獄。兄弟一個個死於飢餓和疾病。\n火旺重傷，勸你拿他的人頭換生路。\n山下傳來喊話：「投降不殺！」`, choices: [{text: "戰鬥到底", target: 'm_end_martyr', desc: "寧死不降"}, {text: "投降告密", target: 'm_end_snitch', desc: "為了活下去"}] },
+            'm_end_martyr': { ai_key: 'jungle', text: `你衝向了包圍圈。\n你死在了深山裡，成為了大稻埕的傳說。\n[結局：山中的英靈]`, type: 'end' },
+            'm_end_snitch': { ai_key: 'slum', text: `你出賣了兄弟，換了錢救了弟弟。\n但一輩子被鄰居戳脊梁骨，罵你是「抓耙子」。\n[結局：活著的鬼魂]`, type: 'end' },
+            'm_collab_start': { ai_key: 'office', text: `你幫官員翻譯，被罵漢奸。但你家裡有米了。\n這天，官員要回大陸了，把查封的工廠交給你處理。`, next: 'm_collab_choice' },
+            'm_collab_choice': { ai_key: 'rich', text: `[第三章：靈魂的價格]\n這是巨大的誘惑。你可以吞下工廠成為大老闆，但要對鄉親下手。\n或者，拒絕不義之財，做點小生意贖罪。`, choices: [{text: "成為大亨", target: 'm_end_tycoon', desc: "富有但孤獨"}, {text: "開米行", target: 'm_end_merchant', desc: "平凡心安"}] },
+            'm_end_tycoon': { ai_key: 'rich', text: `你成了大富豪，住陽明山別墅。\n但兒女都不願回來見你，鄰居依然吐口水。\n[結局：孤獨的大亨]`, type: 'end' },
+            'm_end_merchant': { ai_key: 'teahouse', text: `你開了米行，接濟窮人。\n慢慢地，大家尊稱你一聲「林老闆」。晚年兒孫繞膝，無愧於心。\n[結局：大稻埕的商人]`, type: 'end' }
         }
     }
 };

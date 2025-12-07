@@ -149,10 +149,14 @@
         }
 
         #bg-layer {
-            /* 由 JS 控制大小與位置 */
+            /* 預設隱藏，載入成功後顯示 */
             background-repeat: no-repeat;
-            opacity: 0; /* 預設隱藏，載入後顯示 */
+            background-position: center;
+            background-size: contain; /* 確保完整顯示 */
+            opacity: 0; 
             transition: opacity 0.3s ease;
+            width: 100%;
+            height: 100%;
         }
 
         /* --- 下半部：文字區 (35%) --- */
@@ -235,7 +239,6 @@
             .role-container { flex-direction: column; align-items: center; }
             .role-card { width: 90%; height: auto; min-height: 200px; }
 
-            /* 手機版文字區改為上下排 */
             #text-panel {
                 flex-direction: column;
                 padding: 15px;
@@ -284,11 +287,9 @@
 
     <!-- 3. 遊戲畫面 -->
     <div id="game-view">
-        <!-- 上方圖片區 -->
         <div id="visual-stage">
             <div id="bg-layer"></div>
         </div>
-        <!-- 下方文字區 -->
         <div id="text-panel">
             <div id="story-container"></div>
             <div id="control-container">
@@ -300,49 +301,62 @@
 
 <script>
 // =========================================================
-// ★★★ 圖片設定區 ★★★
+// ★★★ 每一幕的圖片設定區 ★★★
+// 請確認您的圖片檔案名稱與下方完全一致
 // =========================================================
-const ImageConfig = {
-    chen: "image_c3d83e.jpg", 
-    li: "image_c3d838.jpg",   
-    lim: "image_c0ad41.jpg"
+const SceneImages = {
+    // --- 陳光文線 (14張) ---
+    'c_1': "c_1.jpg",               // 基隆港檢查哨
+    'c_dead_1': "c_dead_1.jpg",     // 死亡結局
+    'c_poor_start': "c_poor_start.jpg", // 【新】賄賂動作特寫
+    'c_poor_train': "c_poor_train.jpg", // 火車上
+    'c_poor_meeting': "c_poor_meeting.jpg", // 台北車站遇小林
+    'c_poor_sell': "c_poor_sell.jpg",   // 賣書結局
+    'c_poor_teacher': "c_poor_teacher.jpg", // 溫州街查封
+    'c_poor_decision': "c_poor_decision.jpg", // 巷弄抉擇
+    'c_end_hero': "c_end_hero.jpg",   // 綠島結局
+    'c_end_guilt': "c_end_guilt.jpg", // 逃亡結局
+    'c_rich_apt': "c_rich_apt.jpg",   // 公寓
+    'c_rich_news': "c_rich_news.jpg", // 看報紙
+    'c_rich_bribe': "c_rich_bribe.jpg", // 賄賂失敗
+    'c_rich_us': "c_rich_us.jpg",     // 美國結局
+
+    // --- 李國強線 (10張) ---
+    'l_1': "l_1.jpg",             
+    'l_dead': "l_dead.jpg",                  
+    'l_dignity_start': "l_dignity_start.jpg",         
+    'l_dignity_event': "l_dignity_event.jpg",         
+    'l_dignity_fight': "l_dignity_fight.jpg",         
+    'l_dignity_talk': "l_dignity_talk.jpg",          
+    'l_dog_start': "l_dog_start.jpg",             
+    'l_dog_mission': "l_dog_mission.jpg",           
+    'l_end_agent': "l_end_agent.jpg",             
+    'l_end_betray': "l_end_betray.jpg",            
+
+    // --- 林阿土線 (9張) ---
+    'm_1': "m_1.jpg",            
+    'm_rebel_start': "m_rebel_start.jpg",           
+    'm_rebel_hardship': "m_rebel_hardship.jpg",        
+    'm_end_martyr': "m_end_martyr.jpg",            
+    'm_end_snitch': "m_end_snitch.jpg",            
+    'm_collab_start': "m_collab_start.jpg",          
+    'm_collab_choice': "m_collab_choice.jpg",         
+    'm_end_tycoon': "m_end_tycoon.jpg",            
+    'm_end_merchant': "m_end_merchant.jpg"           
 };
 
-const SpriteMap = {
-    chen: {
-        cols: 5, rows: 3,
-        map: {
-            'c_1': [0, 0], 'c_dead_1': [1, 0], 'c_poor_start': [2, 0], 'c_poor_train': [3, 0], 'c_poor_meeting': [4, 0],
-            'c_poor_sell': [0, 1], 'c_poor_teacher': [1, 1], 'c_poor_decision': [2, 1], 'c_end_hero': [3, 1], 'c_end_guilt': [4, 1],
-            'c_rich_apt': [0, 2], 'c_rich_news': [1, 2], 'c_rich_bribe': [2, 2], 'c_rich_us': [3, 2]
-        }
-    },
-    li: {
-        cols: 4, rows: 3,
-        map: {
-            'l_1': [0, 0], 'l_dead': [1, 0], 'l_dignity_start': [2, 0], 'l_dignity_event': [3, 0],
-            'l_dignity_fight': [0, 1], 'l_dignity_talk': [1, 1], 'l_dog_start': [2, 1], 'l_dog_mission': [3, 1],
-            'l_end_agent': [0, 2], 'l_end_betray': [1, 2]
-        }
-    },
-    lim: {
-        cols: 3, rows: 3,
-        map: {
-            'm_1': [0, 0], 'm_rebel_start': [1, 0], 'm_rebel_hardship': [2, 0],
-            'm_end_martyr': [0, 1], 'm_end_snitch': [1, 1], 'm_collab_start': [2, 1],
-            'm_collab_choice': [0, 2], 'm_end_tycoon': [1, 2], 'm_end_merchant': [2, 2]
-        }
-    }
-};
-
-// 劇本資料
+// 劇本資料 (已加入 c_poor_start)
 const Scripts = {
     chen: {
         start: 'c_1',
         nodes: {
-            'c_1': { text: `[陳光文 - 第一章：黑雨]\n1949年1月27日，基隆港。\n天空像破了個洞，黑色的雨水夾雜著煤煙傾瀉而下。\n你緊緊抱著懷裡的皮箱，裡面藏著一本魯迅的《狂人日記》。\n\n前方是憲兵檢查哨。「下一個！箱子打開！」\n如果書被發現，你就是「赤色分子」。\n\n<div class="history-note"><span class="history-title">歷史背景：動員戡亂時期</span>1949年戒嚴令前夕，持有左翼書籍可被視為「匪諜」，輕則入獄，重則槍決。</div>`, choices: [{text: "賄賂憲兵 (失去金錢)", target: 'c_poor_train', desc: "保住書，但身無分文"}, {text: "丟棄禁書 (失去理想)", target: 'c_rich_apt', desc: "保住錢，但靈魂空缺"}, {text: "硬抗檢查", target: 'c_dead_1', desc: "死亡結局"}] },
+            'c_1': { text: `[陳光文 - 第一章：黑雨]\n1949年1月27日，基隆港。\n天空像破了個洞，黑色的雨水夾雜著煤煙傾瀉而下。\n你緊緊抱著懷裡的皮箱，裡面藏著一本魯迅的《狂人日記》。\n\n前方是憲兵檢查哨。「下一個！箱子打開！」\n如果書被發現，你就是「赤色分子」。\n\n<div class="history-note"><span class="history-title">歷史背景：動員戡亂時期</span>1949年戒嚴令前夕，持有左翼書籍可被視為「匪諜」，輕則入獄，重則槍決。</div>`, choices: [{text: "賄賂憲兵 (失去金錢)", target: 'c_poor_start', desc: "保住書，但身無分文"}, {text: "丟棄禁書 (失去理想)", target: 'c_rich_apt', desc: "保住錢，但靈魂空缺"}, {text: "硬抗檢查", target: 'c_dead_1', desc: "死亡結局"}] },
             'c_dead_1': { text: `「人權？這裡只認拳頭！」\n槍托重重砸在你的太陽穴上。你在抵達台灣的第一個小時，就成為了一具無名屍體。\n[結局：死於非命]`, type: 'end' },
-            'c_poor_train': { text: `你用最後的美金換了通關。你保住了書，但也失去了一切。\n在開往台北的蒸汽火車上，你擠在流亡的人群中，緊抱著皮箱。\n車廂裡充滿了汗臭味和焦慮的氣息。每個人都神色匆匆，彷彿背後有鬼在追。`, next: 'c_poor_meeting' },
+            
+            // 新增節點：賄賂當下
+            'c_poor_start': { text: `你咬著牙，伸手摸進內襯，觸碰到了那捲帶著體溫的美金。\n那是父親變賣了老家祖宅才換來的，是你全部的盤纏。\n你顫抖著手，將錢塞進憲兵油膩的手心。\n憲兵瞥了一眼，拇指快速搓了搓，嘴角勾起一抹貪婪的笑，揮手放行。`, next: 'c_poor_train' },
+
+            'c_poor_train': { text: `你抱著皮箱衝進雨中。你保住了書，但也失去了在這個陌生島嶼生存的資本。\n你混上了一列開往台北的蒸汽火車，擠在流亡的人群中。\n車廂裡充滿了汗臭味和焦慮的氣息。每個人都神色匆匆，彷彿背後有鬼在追。`, next: 'c_poor_meeting' },
             'c_poor_meeting': { text: `[第二章：流浪台北]\n台北車站大廳睡滿了流浪者。你付不起旅館錢，只能睡在騎樓。\n第三天，一個落魄學生小林告訴你：「台大抓得很兇，你的張教授恐怕也出事了。」\n飢餓感正在吞噬你的理智。你還要堅持嗎？`, choices: [{text: "堅持尋找導師", target: 'c_poor_teacher', desc: "就算餓死也要去"}, {text: "賣書換饅頭", target: 'c_poor_sell', desc: "放棄理想求生存"}] },
             'c_poor_sell': { text: `飢餓戰勝了理想。你把《狂人日記》賣給了舊書攤，換了幾個肉包子。\n後來你找了工廠工作，庸碌一生，再也不敢看書。\n[結局：庸碌的倖存者]`, type: 'end' },
             'c_poor_teacher': { text: `你咬牙堅持，找到了溫州街。導師家門口貼著兩條刺眼的白色封條——「查封」。\n你感到一陣暈眩。就在這時，一個戴鴨舌帽的年輕人撞了你一下。\n「別出聲。」他塞給你一個油紙包，「老師被帶走了。憲兵在找這份名單！快走！」`, next: 'c_poor_decision' },
@@ -403,85 +417,31 @@ const Engine = {
         this.state.currentNodeId = Scripts[charKey].start;
         document.getElementById('main-menu').style.display = 'none';
         document.getElementById('game-view').style.display = 'flex';
-        
-        // 監聽視窗變化，自動重繪
-        window.addEventListener('resize', () => {
-            this.renderNode(this.state.currentNodeId, true); // true = 僅重繪圖片
-        });
-
         this.renderNode(this.state.currentNodeId);
     },
 
-    // 主要渲染函式
-    renderNode: function(nodeId, onlyImage = false) {
-        // 若非僅重繪圖片，更新狀態
-        if (!onlyImage) {
-            this.state.currentNodeId = nodeId;
-        }
-
+    renderNode: function(nodeId) {
         const charData = Scripts[this.state.char];
         const node = charData.nodes[nodeId];
-        
-        // --- 圖片顯示邏輯 (Auto Crop & Center) ---
-        const charKey = this.state.char;
-        const onlineImg = ImageConfig[charKey];
-        const spriteData = SpriteMap[charKey];
-        const gridPos = (spriteData && spriteData.map[nodeId]) ? spriteData.map[nodeId] : null;
         const bgLayer = document.getElementById('bg-layer');
+        
+        // --- 單張圖片顯示邏輯 (無切割) ---
+        const imgFile = SceneImages[nodeId];
 
-        if (onlineImg && onlineImg.trim() !== "" && gridPos) {
+        if (imgFile && imgFile.trim() !== "") {
             const img = new Image();
             img.onload = () => {
-                const container = document.getElementById('visual-stage');
-                const cw = container.clientWidth;
-                const ch = container.clientHeight;
-
-                // 計算單格圖片原始尺寸
-                const cellW = img.width / spriteData.cols;
-                const cellH = img.height / spriteData.rows;
-
-                // 裁切高度：只取上方的 85%，切掉底部標題
-                const cropFactor = 0.85;
-                const visibleH = cellH * cropFactor;
-
-                // 計算縮放比例：讓裁切後的圖片完整填滿容器 (Cover 效果，因為是上下分割，畫面要滿)
-                // 或者使用 Contain (完整顯示不裁切)。為了不留黑邊太醜，我們用 Cover 並置中
-                // 但因為這是 "Full View"，我們優先保證「寬度」或「高度」至少有一邊填滿，並居中
-                // 這裡改用 "Contain" 邏輯：保證看到完整圖片 (裁切掉標題後)
-                let scale = Math.min(cw / cellW, ch / visibleH);
-                
-                // 如果想要填滿畫面不留黑邊，改成 Math.max。
-                // 這裡我們使用 Math.min 確保圖片完整呈現。
-
-                const finalW = cellW * scale;
-                const finalH = cellH * scale;
-
-                bgLayer.style.width = `${finalW}px`;
-                bgLayer.style.height = `${finalH}px`;
-                bgLayer.style.backgroundImage = `url('${onlineImg}')`;
-                bgLayer.style.backgroundSize = `${img.width * scale}px ${img.height * scale}px`;
-                
-                // 計算偏移量，顯示正確格子
-                const posX = -1 * gridPos[0] * finalW;
-                const posY = -1 * gridPos[1] * finalH;
-                bgLayer.style.backgroundPosition = `${posX}px ${posY}px`;
-
-                // 顯示圖片
+                bgLayer.style.backgroundImage = `url('${imgFile}')`;
                 bgLayer.style.opacity = 1;
             };
-            // 移除 onerror 的 AI fallback，若失敗則黑屏
-            img.onerror = () => { 
-                console.log("Image load failed."); 
-                bgLayer.style.opacity = 0;
+            img.onerror = () => {
+                console.log("Image not found: " + imgFile);
+                bgLayer.style.opacity = 0; // 失敗顯示黑屏
             };
-            img.src = onlineImg;
+            img.src = imgFile;
         } else {
-            // 沒有圖片設定，保持黑屏
             bgLayer.style.opacity = 0;
         }
-
-        // 如果只是重繪圖片 (Resize)，則不更新文字與選項
-        if (onlyImage) return;
 
         // --- 文字與選項 ---
         const storyContainer = document.getElementById('story-container');

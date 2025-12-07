@@ -86,6 +86,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            overflow-y: auto; 
         }
 
         #main-menu h1 { font-size: 2.5rem; color: var(--accent-color); margin-bottom: 30px; letter-spacing: 5px; }
@@ -273,24 +274,35 @@
         <div style="position:absolute; bottom:20px; color:#666; font-size:0.8rem;">© 2024 Interactive History Project</div>
     </div>
 
-    <!-- 2. 主選單 -->
+<!-- 2. 主選單 -->
     <div id="main-menu">
         <h1>選擇你的命運</h1>
+        <div class="menu-subtitle">三種身份，三種截然不同的歷史記憶</div>
         <div class="role-container">
             <div class="role-card" onclick="Engine.start('chen')">
-                <div class="role-name">陳光文</div>
-                <div class="role-desc">流亡學生。在白色恐怖的陰影下，尋找失蹤的導師與理想。</div>
+                <div>
+                    <div class="role-name">陳光文</div>
+                    <div class="role-desc">流亡學生。<br>在白色恐怖的陰影下，尋找失蹤的導師與理想。</div>
+                </div>
+                <div class="role-stats">歷史焦點：學運、白色恐怖</div>
             </div>
             <div class="role-card" onclick="Engine.start('li')">
-                <div class="role-name">李國強</div>
-                <div class="role-desc">流亡軍眷。在族群衝突與省籍情結的夾縫中，尋找生存的尊嚴。</div>
+                <div>
+                    <div class="role-name">李國強</div>
+                    <div class="role-desc">流亡軍眷。<br>在族群衝突與省籍情結的夾縫中，尋找生存的尊嚴。</div>
+                </div>
+                <div class="role-stats">歷史焦點：眷村、族群融合</div>
             </div>
             <div class="role-card" onclick="Engine.start('lim')">
-                <div class="role-name">林阿土</div>
-                <div class="role-desc">返鄉軍伕。在惡性通膨與政權更迭的混亂中，試圖守護一家溫飽。</div>
+                <div>
+                    <div class="role-name">林阿土</div>
+                    <div class="role-desc">返鄉軍伕。<br>在惡性通膨與政權更迭的混亂中，試圖守護一家溫飽。</div>
+                </div>
+                <div class="role-stats">歷史焦點：惡性通膨、228陰影</div>
             </div>
         </div>
     </div>
+
 
     <!-- 3. 遊戲介面 -->
     <div id="game-view">

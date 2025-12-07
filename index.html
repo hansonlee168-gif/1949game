@@ -131,8 +131,8 @@
         }
 
         #scene-img {
-            width: 60%;
-            height: 60%;
+            width: 75%;
+            height: 75%;
             object-fit: contain;
             opacity: 0;
             transition: opacity 0.5s ease;
@@ -453,7 +453,7 @@ const Engine = {
         let html = node.text.replace(/\[(.*?)\]/g, '<span class="speaker-tag">$1</span>');
         block.innerHTML = `<div class="story-text">${html}</div>`;
         storyContainer.appendChild(block);
-        setTimeout(() => storyContainer.scrollTop = storyContainer.scrollHeight, 100);
+        setTimeout(() => storyContainer.scrollTop = 0, 100);
 
         const nextBtn = document.getElementById('next-btn');
         const choiceBox = document.getElementById('choice-box');

@@ -340,7 +340,7 @@ const Scripts = {
     chen: {
         start: 'c_1',
         nodes: {
-            'c_1': { text: `[陳光文 - 第一章：黑雨]\n1949年1月27日，基隆港。\n天空像破了個洞，黑色的雨水夾雜著煤煙傾瀉而下。\n你緊緊抱著懷裡的皮箱，裡面藏著一本魯迅的《狂人日記》。\n\n前方是憲兵檢查哨。「下一個！箱子打開！」\n如果書被發現，你就是「赤色分子」。\n\n<div class="history-note"><span class="history-title">歷史背景：動員戡亂時期</span>1949年戒嚴令前夕，持有左翼書籍可被視為「匪諜」，輕則入獄，重則槍決。</div>`, choices: [{text: "賄賂憲兵 (失去金錢)", target: 'c_poor_start', desc: "保住書，但身無分文"}, {text: "丟棄禁書 (失去理想)", target: 'c_rich_apt', desc: "保住錢，但靈魂空缺"}, {text: "硬抗檢查", target: 'c_dead_1', desc: "死亡結局"}] },
+            'c_1': { text: `[陳光文 - 第一章：黑雨]\n1949年1月27日，基隆港。\n天空像破了個洞，黑色的雨水夾雜著煤煙傾瀉而下。\n你緊緊抱著懷裡的皮箱，裡面藏著一本魯迅的《狂人日記》。\n\n前方是憲兵檢查哨。「下一個！箱子打開！」\n如果書被發現，你就是「赤色分子」。\n\n<div class="history-note"><span class="history-title">歷史背景：動員戡亂時期</span>1949年戒嚴令前夕，持有左翼書籍可被視為「匪諜」，輕則入獄，重則槍決。</div>`, choices: [{text: "賄賂憲兵 (失去金錢)", target: 'c_poor_start', desc: "保住書，但身無分文"}, {text: "丟棄禁書 (失去理想)", target: 'c_rich_apt', desc: "保住錢，但靈魂空缺"}, {text: "硬抗檢查", target: 'c_dead_1', desc: "勇往直前"}] },
             'c_dead_1': { text: `「人權？這裡只認拳頭！」\n槍托重重砸在你的太陽穴上。你在抵達台灣的第一個小時，就成為了一具無名屍體。\n[結局：死於非命]`, type: 'end' },
             'c_poor_start': { text: `你咬著牙，伸手摸進內襯，觸碰到了那捲帶著體溫的美金。\n那是父親變賣了老家祖宅才換來的，是你全部的盤纏。\n你顫抖著手，將錢塞進憲兵油膩的手心。\n憲兵瞥了一眼，拇指快速搓了搓，嘴角勾起一抹貪婪的笑，揮手放行。`, next: 'c_poor_train' },
             'c_poor_train': { text: `你抱著皮箱衝進雨中。你保住了書，但也失去了在這個陌生島嶼生存的資本。\n你混上了一列開往台北的蒸汽火車，擠在流亡的人群中。\n車廂裡充滿了汗臭味和焦慮的氣息。每個人都神色匆匆，彷彿背後有鬼在追。`, next: 'c_poor_meeting' },
@@ -359,7 +359,7 @@ const Scripts = {
     li: {
         start: 'l_1',
         nodes: {
-            'l_1': { text: `[李國強 - 第一章：被踐踏的勳章]\n1949年2月，台北行政公署。烈日當空。\n你穿著破爛軍服，手裡緊捏著一枚「青天白日勳章」。\n衛兵一把拍掉了你的勳章，它滾進了臭水溝。\n「現在將軍都討飯，你一個連長的兒子算個屁？滾！」\n\n<div class="history-note"><span class="history-title">歷史背景：外省難民潮</span>約120萬人從大陸撤退至台灣，初期政府無力安置，許多軍眷流離失所。</div>`, choices: [{text: "隱忍撿起 (自尊)", target: 'l_dignity_start', desc: "去碼頭做苦力"}, {text: "下跪乞食 (黑化)", target: 'l_dog_start', desc: "為了活下去"}, {text: "拔刀拼命", target: 'l_dead', desc: "死亡結局"}] },
+            'l_1': { text: `[李國強 - 第一章：被踐踏的勳章]\n1949年2月，台北行政公署。烈日當空。\n你穿著破爛軍服，手裡緊捏著一枚「青天白日勳章」。\n衛兵一把拍掉了你的勳章，它滾進了臭水溝。\n「現在將軍都討飯，你一個連長的兒子算個屁？滾！」\n\n<div class="history-note"><span class="history-title">歷史背景：外省難民潮</span>約120萬人從大陸撤退至台灣，初期政府無力安置，許多軍眷流離失所。</div>`, choices: [{text: "隱忍撿起 (自尊)", target: 'l_dignity_start', desc: "去碼頭做苦力"}, {text: "下跪乞食 (黑化)", target: 'l_dog_start', desc: "為了活下去"}, {text: "拔刀拼命", target: 'l_dead', desc: "有勇無謀"}] },
             'l_dead': { text: `槍聲響起。你倒在血泊中，死死盯著水溝裡的勳章。\n[結局：街頭喋血]`, type: 'end' },
             'l_dignity_start': { text: `你默默跳進水溝撿起勳章，擦乾淨。\n你轉身走向基隆碼頭，當起了搬運工。\n你是唯一的「阿山」，語言不通，受盡排擠。`, next: 'l_dignity_event' },
             'l_dignity_event': { text: `午餐時，一個本地工人故意踢翻了你的粥。\n「滾回去！這裡沒你的飯！」\n你餓得發抖，拳頭握緊。你想殺人，但看著地上的米粒，你想起了父親。`, choices: [{text: "暴力反擊", target: 'l_dignity_fight', desc: "贏得恐懼"}, {text: "溝通化解", target: 'l_dignity_talk', desc: "贏得尊重"}] },
